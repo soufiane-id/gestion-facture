@@ -1,158 +1,113 @@
 <template>
-  <div class="animated fadeIn">
-    <div class="card">
-      <div class="card-header">
-        Headings
-      </div>
-      <div class="card-body">
-        <p>Documentation and examples for Bootstrap typography, including global settings, headings, body text, lists, and more.</p>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Heading</th>
-              <th>Example</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <p><code class="highlighter-rouge">&lt;h1&gt;&lt;/h1&gt;</code></p>
-              </td>
-              <td><span class="h1">h1. Bootstrap heading</span></td>
-            </tr>
-            <tr>
-              <td>
-                <p><code class="highlighter-rouge">&lt;h2&gt;&lt;/h2&gt;</code></p>
-              </td>
-              <td><span class="h2">h2. Bootstrap heading</span></td>
-            </tr>
-            <tr>
-              <td>
-                <p><code class="highlighter-rouge">&lt;h3&gt;&lt;/h3&gt;</code></p>
-              </td>
-              <td><span class="h3">h3. Bootstrap heading</span></td>
-            </tr>
-            <tr>
-              <td>
-                <p><code class="highlighter-rouge">&lt;h4&gt;&lt;/h4&gt;</code></p>
-              </td>
-              <td><span class="h4">h4. Bootstrap heading</span></td>
-            </tr>
-            <tr>
-              <td>
-                <p><code class="highlighter-rouge">&lt;h5&gt;&lt;/h5&gt;</code></p>
-              </td>
-              <td><span class="h5">h5. Bootstrap heading</span></td>
-            </tr>
-            <tr>
-              <td>
-                <p><code class="highlighter-rouge">&lt;h6&gt;&lt;/h6&gt;</code></p>
-              </td>
-              <td><span class="h6">h6. Bootstrap heading</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        Headings
-      </div>
-      <div class="card-body">
-        <p><code class="highlighter-rouge">.h1</code> through <code class="highlighter-rouge">.h6</code> classes are also available, for when you want to match the font styling of a heading but cannot use the associated HTML element.</p>
-        <div class="bd-example">
-          <p class="h1">h1. Bootstrap heading</p>
-          <p class="h2">h2. Bootstrap heading</p>
-          <p class="h3">h3. Bootstrap heading</p>
-          <p class="h4">h4. Bootstrap heading</p>
-          <p class="h5">h5. Bootstrap heading</p>
-          <p class="h6">h6. Bootstrap heading</p>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        Display headings
-      </div>
-      <div class="card-body">
-        <p>Traditional heading elements are designed to work best in the meat of your page content. When you need a heading to stand out, consider using a <strong>display heading</strong>—a larger, slightly more opinionated heading style.</p>
-        <div class="bd-example bd-example-type">
-          <table class="table">
-            <tbody>
-              <tr>
-                <td><span class="display-1">Display 1</span></td>
-              </tr>
-              <tr>
-                <td><span class="display-2">Display 2</span></td>
-              </tr>
-              <tr>
-                <td><span class="display-3">Display 3</span></td>
-              </tr>
-              <tr>
-                <td><span class="display-4">Display 4</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        Inline text elements
-      </div>
-      <div class="card-body">
-        <p>Traditional heading elements are designed to work best in the meat of your page content. When you need a heading to stand out, consider using a <strong>display heading</strong>—a larger, slightly more opinionated heading style.</p>
-        <div class="bd-example">
-          <p>You can use the mark tag to <mark>highlight</mark> text.</p>
-          <p><del>This line of text is meant to be treated as deleted text.</del></p>
-          <p><s>This line of text is meant to be treated as no longer accurate.</s></p>
-          <p><ins>This line of text is meant to be treated as an addition to the document.</ins></p>
-          <p><u>This line of text will render as underlined</u></p>
-          <p><small>This line of text is meant to be treated as fine print.</small></p>
-          <p><strong>This line rendered as bold text.</strong></p>
-          <p><em>This line rendered as italicized text.</em></p>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        Description list alignment
-      </div>
-      <div class="card-body">
-        <p>Align terms and descriptions horizontally by using our grid system’s predefined classes (or semantic mixins). For longer terms, you can optionally add a <code class="highlighter-rouge">.text-truncate</code> class to truncate the text with an ellipsis.</p>
-        <div class="bd-example">
-          <dl class="row">
-            <dt class="col-sm-3">Description lists</dt>
-            <dd class="col-sm-9">A description list is perfect for defining terms.</dd>
+  <div>
+    <h1>vue-xlsx-table</h1>
+    <vue-xlsx-table @on-select-file="handleSelectedFile">Importer !</vue-xlsx-table>
 
-            <dt class="col-sm-3">Euismod</dt>
-            <dd class="col-sm-9">
-              <p>Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</p>
-              <p>Donec id elit non mi porta gravida at eget metus.</p>
-            </dd>
-
-            <dt class="col-sm-3">Malesuada porta</dt>
-            <dd class="col-sm-9">Etiam porta sem malesuada magna mollis euismod.</dd>
-
-            <dt class="col-sm-3 text-truncate">Truncated term is truncated</dt>
-            <dd class="col-sm-9">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</dd>
-
-            <dt class="col-sm-3">Nesting</dt>
-            <dd class="col-sm-9">
-              <dl class="row">
-                <dt class="col-sm-4">Nested definition list</dt>
-                <dd class="col-sm-8">Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc.</dd>
-              </dl>
-            </dd>
-          </dl>
-        </div>
-      </div>
-    </div>
+    <b-col sm="12">
+      <c-table
+        :table-data="tableData"
+        :per-page="10"
+        :fields="tableHeader"
+        hover
+        striped
+        bordered
+        small
+        fixed
+        caption="<i class='fa fa-align-justify'></i> Echeanciers client à intégrer"
+      ></c-table>
+    </b-col>
   </div>
 </template>
 
 <script>
+import cTable from "../../views/base/Table";
+import http from '../../client/http-common'
+
 export default {
-  name: 'typography'
-}
+  name: "UploadExcel",
+  components: { cTable },
+  data() {
+    return {
+      tableData: [],
+      tableHeader: []
+    };
+  },
+  methods: {
+    monSuperTraitement(jsonBody) {
+      /* On formate le nom des colonnes pour les adapter aux champs coté backend*/
+      jsonBody = JSON.parse(
+        JSON.stringify(jsonBody)
+          .split('"Date échéance":')
+          .join('"dateEcheance":')
+          .split('"Numéro du document":')
+          .join('"numeroDocument":')
+          .split('"Montant":')
+          .join('"montantFacture":')
+          .split('"Soldée":')
+          .join('"soldee":')
+          .split('"Code tiers":')
+          .join('"codeTiers":')
+          .split('"Client":')
+          .join('"nomClient":')
+          .split('"Moyen de paiement":')
+          .join('"moyenPaiement":')
+          .split('"Solde dû":')
+          .join('"resteAPayer":')
+      );
+      let formattedRequest = JSON.stringify(jsonBody);
+
+      /* On supprime tous les elements n'ayant pas de dateEcheance + ajout de la societe */
+      let arrayRequest = JSON.parse(formattedRequest);
+      let societeString = '"societe":{"idSociete":21},';
+      for (let i in arrayRequest) {
+        if (!arrayRequest[i].dateEcheance) {
+          arrayRequest.splice(i, 1);
+        } else {
+          /* On ajoute le champ societe pour toutes les lignes*/
+          arrayRequest[i] = JSON.parse(this.insertAt(JSON.stringify(arrayRequest[i]), 1, societeString));
+          
+          /* suppression des virgules dans le montantFacture et resteAPayer */
+          if(arrayRequest[i].montantFacture.includes(',')){
+            arrayRequest[i].montantFacture = arrayRequest[i].montantFacture.replace(",", "");
+          }
+          if(arrayRequest[i].resteAPayer.includes(',')){
+            arrayRequest[i].resteAPayer = arrayRequest[i].resteAPayer.replace(",", "");
+          }
+          let self=this;
+          /* insertion dans la BDD*/
+          http.post('echeancierClients', arrayRequest[i])
+                .then(function (response) {
+                  console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                    self.makeToast('danger', 'Erreur lors de l\'insertion des écheanciers client');
+                    return;
+                });
+        }
+      }
+      console.log(arrayRequest);
+    },
+    insertAt(string, index, stringToInsert) {
+      if (index > 0){
+        return string.substring(0, index) + stringToInsert + string.substring(index, string.length);
+      }
+        return stringToInsert + string;
+    },
+    handleSelectedFile(convertedData) {
+      this.tableData = convertedData.body;
+      this.tableHeader = convertedData.header;
+      this.monSuperTraitement(this.tableData);
+      //this.makeToast('success', 'L\'insertion a été effectuée avec succès');
+    },
+    makeToast(variant = null, msg) {
+        this.$bvToast.toast(msg, {
+          title: `Message ${variant || 'default'}`,
+          variant: variant,
+          solid: true
+        })
+      }
+  
+  }
+};
 </script>

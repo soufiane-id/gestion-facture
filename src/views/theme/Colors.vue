@@ -38,20 +38,23 @@ export default {
             sortable: true
           },
           {
-            key: 'client.nomClient',
+            key: 'nomClient',
             label: 'Nom Client',
             sortable: true,
             // Variant applies to the whole column, including the header and footer(https://bootstrap-vue.js.org/docs/reference/color-variants/)
             //variant: 'success'
           },{
+            key: 'numeroDocument',
+            sortable: true
+          },{
             key: 'dateFacture',
             sortable: true,
-            formatter : this.formaterDate,
-            filterByFormatted : true
+            // formatter : this.formaterDate,
+            // filterByFormatted : true
           },{
             key: 'dateEcheance',
             sortable: true,
-            formatter: this.formaterDate
+            //formatter: this.formaterDate
           },
           {
             key: 'montantFacture',
@@ -65,7 +68,7 @@ export default {
           },{
             key: 'dateReglementFacture',
             sortable: true,
-            formatter : this.formaterDate
+            //formatter : this.formaterDate
           }
         ]
     };
@@ -93,7 +96,7 @@ export default {
     filtredEcheanciers: function(){
       return this.echeanciersClient.filter((ech) => {
         return String(ech.montantFacture).match(this.filterSearch) 
-                || ech.client.nomClient.match(this.filterSearch)
+                || ech.nomClient.toLowerCase().match(this.filterSearch.toLowerCase())
                 || ech.societe.nomSociete.match(this.filterSearch)
       });
     }

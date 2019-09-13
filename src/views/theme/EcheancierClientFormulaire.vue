@@ -5,18 +5,19 @@
       <b-form-group id="input-group-3" label="Societe:" label-for="input-3">
         <b-form-select
           id="input-3"
-          v-model="form.food"
+          v-model="echeancierClient.food"
           size="sm"
           :options="societeSelectList"
           required
         ></b-form-select>
       </b-form-group>
 
-      <b-form-group id="input-group-1" label="Email address:" label-for="input-1">
+      <!-- Nom Client -->
+      <b-form-group id="input-group-1" label="Nom Client:" label-for="input-1">
         <b-form-input
           id="input-1"
-          v-model="form.email"
-          type="email"
+          v-model="echeancierClient.email"
+          type="text"
           size="sm"
           required
           placeholder="Enter email"
@@ -24,11 +25,11 @@
       </b-form-group>
 
       <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
-        <b-form-input id="input-2" v-model="form.name" required size="sm" placeholder="Enter name"></b-form-input>
+        <b-form-input id="input-2" v-model="echeancierClient.name" required size="sm" placeholder="Enter name"></b-form-input>
       </b-form-group>
 
       <b-form-group id="input-group-4">
-        <b-form-checkbox-group v-model="form.checked" id="checkboxes-4">
+        <b-form-checkbox-group v-model="echeancierClient.checked" id="checkboxes-4">
           <b-form-checkbox value="me">Check me out</b-form-checkbox>
           <b-form-checkbox value="that">Check that out</b-form-checkbox>
         </b-form-checkbox-group>
@@ -38,7 +39,7 @@
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
     <b-card class="mt-3" header="Form Data Result">
-      <pre class="m-0">{{ form }}</pre>
+      <pre class="m-0">{{ echeancierClient }}</pre>
     </b-card>
   </div>
 </template>
@@ -51,7 +52,7 @@ export default {
     return {
       societes: [],
       societeSelectList: [],
-      form: {
+      echeancierClient: {
         email: "",
         name: "",
         food: null,
@@ -82,16 +83,16 @@ export default {
     },
     onSubmit(evt) {
       evt.preventDefault();
-      alert(JSON.stringify(this.form));
+      alert(JSON.stringify(this.echeancierClient));
     },
     onReset(evt) {
       evt.preventDefault();
-      // Reset our form values
-      this.form.email = "";
-      this.form.name = "";
-      this.form.food = null;
-      this.form.checked = [];
-      // Trick to reset/clear native browser form validation state
+      // Reset our echeancierClient values
+      this.echeancierClient.email = "";
+      this.echeancierClient.name = "";
+      this.echeancierClient.food = null;
+      this.echeancierClient.checked = [];
+      // Trick to reset/clear native browser echeancierClient validation state
       this.show = false;
       this.$nextTick(() => {
         this.show = true;

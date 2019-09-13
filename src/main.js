@@ -8,11 +8,14 @@ import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import App from './App'
 import router from './router'
+import vueXlsxTable from 'vue-xlsx-table'
 
 // todo
 // cssVars()
 
 Vue.use(BootstrapVue)
+Vue.use(vueXlsxTable, {rABS: false}) //Browser FileReader API have two methods to read local file readAsBinaryString and readAsArrayBuffer, default rABS false
+
 
 /* eslint-disable no-new */
 new Vue({
