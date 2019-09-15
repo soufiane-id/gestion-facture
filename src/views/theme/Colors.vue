@@ -1,18 +1,21 @@
 <template>
+<div>
   <b-row>
-    <Formulaire />
-    <div>
-      <b-col sm="3">
+      <Formulaire @refresh="refreshTable"/>
+  </b-row>
+  <b-row>
+    <b-col sm="3">
               <b-form-group>
                 <b-form-input type="text" id="name" v-model="filterSearch" placeholder="Filtrer ..."></b-form-input>
               </b-form-group>
     </b-col>
+  </b-row>
+  <b-row>
       <b-col sm="12">
         <c-table :table-data="filtredEcheanciers" :per-page=10 :fields="fieldsToShow" hover striped bordered small fixed caption="<i class='fa fa-align-justify'></i> List des écheanciers client"></c-table>
       </b-col>
-    </div>
   </b-row>
-
+</div>
 </template>
 
 <script>
@@ -30,6 +33,7 @@ export default {
   data() {
     return {
       echeanciersClient:[],
+      mapSociete: [],
       filterSearch: '',
       fieldsToShow: [
         {
@@ -87,17 +91,36 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+    refreshTable(ech){
+      // On valorise le nomSociete à partir de l'id
+      let idSoc = ech.societe.idSociete;
+      const societeAdded = this.mapSociete.find(soc => soc.idSociete === idSoc);
+      ech.societe.nomSociete = societeAdded.nomSociete;
+      // refresh
+      this.echeanciersClient=[ ...this.echeanciersClient, ech];
+    },fillMapSociete(){
+      http
+        .get("/listSociete")
+        .then(response => {
+          this.mapSociete = response.data;
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
   },
   created() {
     this.recupererEcheanciersClient();
+    this.fillMapSociete();
   }, 
   computed: {
     filtredEcheanciers: function(){
       return this.echeanciersClient.filter((ech) => {
         return String(ech.montantFacture).match(this.filterSearch) 
                 || ech.nomClient.toLowerCase().match(this.filterSearch.toLowerCase())
-                || ech.societe.nomSociete.match(this.filterSearch)
+                || ech.societe.nomSociete.toLowerCase().match(this.filterSearch.toLowerCase())
+                || ech.numeroDocument.toLowerCase().match(this.filterSearch.toLowerCase())
       });
     }
   }

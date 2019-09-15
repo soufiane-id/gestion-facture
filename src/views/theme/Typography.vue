@@ -1,7 +1,17 @@
 <template>
   <div>
-    <h1>vue-xlsx-table</h1>
-    <vue-xlsx-table @on-select-file="handleSelectedFile">Importer !</vue-xlsx-table>
+    <!-- Societe -->
+      <b-form-group id="input-group-3" label="Societe:" label-for="input-3">
+        <b-form-select
+          id="input-3"
+          v-model="selectedSociete"
+          size="sm"
+          :options="societeSelectList"
+          required
+        ></b-form-select>
+      </b-form-group>
+
+    <vue-xlsx-table class="importId" @on-select-file="handleSelectedFile">Importer !</vue-xlsx-table>
 
     <b-col sm="12">
       <c-table
@@ -29,7 +39,9 @@ export default {
   data() {
     return {
       tableData: [],
-      tableHeader: []
+      tableHeader: [],
+      societeSelectList: [],
+      selectedSociete: ""
     };
   },
   methods: {
@@ -58,7 +70,7 @@ export default {
 
       /* On supprime tous les elements n'ayant pas de dateEcheance + ajout de la societe */
       let arrayRequest = JSON.parse(formattedRequest);
-      let societeString = '"societe":{"idSociete":21},';
+      let societeString = '"societe":{"idSociete":'+this.selectedSociete+'},';
       for (let i in arrayRequest) {
         if (!arrayRequest[i].dateEcheance) {
           arrayRequest.splice(i, 1);
@@ -95,10 +107,13 @@ export default {
         return stringToInsert + string;
     },
     handleSelectedFile(convertedData) {
+      if(!this.selectedSociete){
+        this.makeToast('danger', 'Veuillez mentionner la société');
+        return;
+      }
       this.tableData = convertedData.body;
       this.tableHeader = convertedData.header;
       this.monSuperTraitement(this.tableData);
-      //this.makeToast('success', 'L\'insertion a été effectuée avec succès');
     },
     makeToast(variant = null, msg) {
         this.$bvToast.toast(msg, {
@@ -108,6 +123,32 @@ export default {
         })
       }
   
+  }, created() {
+    http.get("/listSociete")
+        .then(response => {
+          this.societes = response.data;
+
+          this.societes.forEach((societe, index, mechanicsArray) => {
+            let selectListOption = {
+              value: societe.idSociete,
+              text: societe.nomSociete
+            };
+
+            this.societeSelectList.push(selectListOption);
+          });
+        })
+        .catch(e => {
+          console.log(e);
+        });
   }
 };
 </script>
+<style scoped>
+
+.importId {
+    margin-top: 10px;
+    margin-left: 460px;
+    margin-bottom: 20px;
+}
+
+</style>

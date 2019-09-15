@@ -19,12 +19,12 @@ export default {
       }
     },
     {
-      name: 'Colors',
+      name: 'Echeancier Client',
       url: '/theme/colors',
       icon: 'icon-drop'
     },
     {
-      name: 'Typography',
+      name: 'Intégrer EC',
       url: '/theme/typography',
       icon: 'icon-pencil'
     },
