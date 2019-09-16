@@ -67,12 +67,13 @@ export default {
           .join('"resteAPayer":')
       );
       let formattedRequest = JSON.stringify(jsonBody);
+      let cpt = 0;
 
       /* On supprime tous les elements n'ayant pas de dateEcheance + ajout de la societe */
       let arrayRequest = JSON.parse(formattedRequest);
       let societeString = '"societe":{"idSociete":'+this.selectedSociete+'},';
       for (let i in arrayRequest) {
-        if (!arrayRequest[i].dateEcheance) {
+        if (!arrayRequest[i].dateEcheance || !arrayRequest[i].montantFacture) {
           arrayRequest.splice(i, 1);
         } else {
           /* On ajoute le champ societe pour toutes les lignes*/
@@ -89,12 +90,16 @@ export default {
           /* insertion dans la BDD*/
           http.post('echeancierClients', arrayRequest[i])
                 .then(function (response) {
-                  console.log(response);
+                  cpt++;
+                  if(cpt == arrayRequest.length){
+                    self.makeToast('success', cpt + 'ligne(s) ont été enregistré');
+                  }
                 })
                 .catch(function (error) {
                     console.log(error)
-                    self.makeToast('danger', 'Erreur lors de l\'insertion des écheanciers client');
-                    return;
+                    cpt--;
+                    self.makeToast('danger', 'Erreur lors de l\'insertion d\'au moins une echeance !');
+
                 });
         }
       }

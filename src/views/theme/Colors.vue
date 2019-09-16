@@ -1,9 +1,6 @@
 <template>
 <div>
   <b-row>
-      <Formulaire @refresh="refreshTable"/>
-  </b-row>
-  <b-row>
     <b-col sm="3">
               <b-form-group>
                 <b-form-input type="text" id="name" v-model="filterSearch" placeholder="Filtrer ..."></b-form-input>
@@ -14,6 +11,9 @@
       <b-col sm="12">
         <c-table :table-data="filtredEcheanciers" :per-page=10 :fields="fieldsToShow" hover striped bordered small fixed caption="<i class='fa fa-align-justify'></i> List des écheanciers client"></c-table>
       </b-col>
+  </b-row>
+  <b-row>
+      <Formulaire @refresh="refreshTable"/>
   </b-row>
 </div>
 </template>
