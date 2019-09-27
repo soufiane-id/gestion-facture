@@ -36,6 +36,7 @@
     "simple-line-icons": "^2.4.1",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.4.2",
+    "vue-loading-overlay": "^3.2.0",
     "vue-perfect-scrollbar": "^0.1.0",
     "vue-router": "^3.0.6",
     "vue-xlsx-table": "^1.2.8",

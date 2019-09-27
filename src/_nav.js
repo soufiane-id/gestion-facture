@@ -38,6 +38,23 @@ export default {
       }
     },
     {
+      name: 'Banque',
+      url: '/banque',
+      icon: 'icon-eur',
+      children: [
+        {
+          name: 'Liste opérations',
+          url: '/banque/banques',
+          icon: 'icon-usd'
+        },
+        {
+          name: 'Liste réglements',
+          url: '/banque/integrationBanque',
+          icon: 'icon-usd'
+        }
+      ]
+    },
+    {
       name: 'Base',
       url: '/base',
       icon: 'icon-puzzle',

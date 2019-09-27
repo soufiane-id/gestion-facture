@@ -31,7 +31,8 @@
 
 <script>
 import cTable from "../../views/base/Table";
-import http from '../../client/http-common'
+import http from "../../client/http-common";
+import toast from "../../commons/toastr";
 
 export default {
   name: "UploadExcel",
@@ -41,7 +42,8 @@ export default {
       tableData: [],
       tableHeader: [],
       societeSelectList: [],
-      selectedSociete: ""
+      selectedSociete: "",
+      loader:""
     };
   },
   methods: {
@@ -92,14 +94,18 @@ export default {
                 .then(function (response) {
                   cpt++;
                   if(cpt == arrayRequest.length){
-                    self.makeToast('success', cpt + 'ligne(s) ont été enregistré');
+                    self.afficherToast('success', cpt + 'ligne(s) ont été enregistré');
+                    self.loader.hide();
                   }
                 })
                 .catch(function (error) {
-                    console.log(error)
                     cpt--;
-                    self.makeToast('danger', 'Erreur lors de l\'insertion d\'au moins une echeance !');
-
+                    if(error.response.data.message == 'Client inconnu'){
+                      self.afficherToast('danger', 'Client inconnu !');
+                    }else{
+                      self.afficherToast('danger', 'Erreur lors de l\'insertion d\'au moins une echeance !');
+                    }
+                    
                 });
         }
       }
@@ -113,21 +119,24 @@ export default {
     },
     handleSelectedFile(convertedData) {
       if(!this.selectedSociete){
-        this.makeToast('danger', 'Veuillez mentionner la société');
+        this.afficherToast('danger', 'Veuillez mentionner la société');
         return;
       }
+      this.submit();
       this.tableData = convertedData.body;
       this.tableHeader = convertedData.header;
       this.monSuperTraitement(this.tableData);
+      console.log(this.loader);
     },
-    makeToast(variant = null, msg) {
-        this.$bvToast.toast(msg, {
-          title: `Message ${variant || 'default'}`,
-          variant: variant,
-          solid: true
-        })
-      }
-  
+    submit() {
+      console.log(this.$loading);
+                  this.loader = this.$loading.show({
+                  // Optional parameters
+                  container: this.fullPage ? null : this.$refs.formContainer,
+                  canCancel: true,
+                  onCancel: this.onCancel,
+                });                
+    }
   }, created() {
     http.get("/listSociete")
         .then(response => {
@@ -145,7 +154,7 @@ export default {
         .catch(e => {
           console.log(e);
         });
-  }
+  }, mixins: [toast]
 };
 </script>
 <style scoped>

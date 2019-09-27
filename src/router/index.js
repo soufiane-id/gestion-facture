@@ -10,7 +10,7 @@ const Dashboard = () => import('@/views/Dashboard')
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
 
-const Charts = () => import('@/views/Charts')
+const Charts = () => import('@/views/client/Charts')
 const Widgets = () => import('@/views/Widgets')
 
 // Views - Components
@@ -19,6 +19,8 @@ const Forms = () => import('@/views/base/Forms')
 const Switches = () => import('@/views/base/Switches')
 const Tables = () => import('@/views/base/Tables')
 const Tabs = () => import('@/views/base/Tabs')
+const BanqueOverview = () => import('@/views/banque/BanqueOverview')
+const IntegrationBanque = () => import('@/views/banque/IntegrationBanque')
 const Breadcrumbs = () => import('@/views/base/Breadcrumbs')
 const Carousels = () => import('@/views/base/Carousels')
 const Collapses = () => import('@/views/base/Collapses')
@@ -123,6 +125,25 @@ export default new Router({
               name: 'User',
               component: User,
             },
+          ]
+        },
+        {
+          path: 'banque',
+          redirect: '/banque/banques',
+          name: 'Banque',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'banques',
+              name: 'BanqueList',
+              component: BanqueOverview
+            },{
+              path: 'integrationBanque',
+              name: 'Integration Banque',
+              component: IntegrationBanque
+            }
           ]
         },
         {

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <b-modal id="formulaireAjoutEC" ref="modal" no-close-on-esc hide-footer>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <!-- Societe -->
       <b-form-group id="input-group-3" label="Societe:" label-for="input-3">
@@ -12,8 +13,16 @@
         ></b-form-select>
       </b-form-group>
 
+      <!-- Nom Client AutoComplete-->
+      <div>
+       <auto :suggestions="clients" 
+       filterby="nomClient" 
+       v-model="echeancierClient.client.nomClient"
+       @selected="clientSelected"></auto>
+      </div>
+
       <!-- Nom Client -->
-      <b-form-group id="input-group-1" label="Nom Client:" label-for="input-1">
+      <!-- <b-form-group id="input-group-1" label="Nom Client:" label-for="input-1">
         <b-form-input
           id="input-1"
           v-model="echeancierClient.nomClient"
@@ -22,7 +31,7 @@
           required
           placeholder="Entrer le client .."
         ></b-form-input>
-      </b-form-group>
+      </b-form-group> -->
 
       <!-- Numero document -->
       <b-form-group id="input-group-2" label="Numéro du document:" label-for="input-2">
@@ -65,24 +74,31 @@
     <!-- <b-card class="mt-3" header="Form Data Result">
       <pre class="m-0">{{ echeancierClient }}</pre>
     </b-card> -->
+    </b-modal>
   </div>
 </template>
 
 <script>
 import http from "../../client/http-common";
+import Auto from "../../commons/AutoComplete2";
+import toast from "../../commons/toastr"
 import moment from 'moment'
 import 'moment/locale/fr'
 moment.locale('fr')
 
 export default {
+  components: {Auto},
   data() {
     return {
+      //selection: '',
       format: "dd/MM/yy",
       societes: [],
+      clients: [],
+      clientSelectionne: {},
       societeSelectList: [],
       echeancierClient: {
         societe: { idSociete: ""},
-        nomClient: "",
+        client: {nomClient: ""},
         numeroDocument: "",
         dateFacture: "",
         dateEcheance: "",
@@ -100,14 +116,17 @@ export default {
     this.echeancierClient.dateFacture = this.formatDate(this.echeancierClient.dateFacture);
     this.echeancierClient.dateEcheance = this.formatDate(this.echeancierClient.dateEcheance);
     this.echeancierClient.dateReglementFacture = this.formatDate(this.echeancierClient.dateReglementFacture);
+    this.echeancierClient.client = this.clientSelectionne;
     let self=this;
-    http.post('echeancierClients', this.echeancierClient)
+    http.post('echeancierClients',this.echeancierClient)
                 .then(function (response) {
-                  alert('BRAVO');
                   self.$emit('refresh', response.data);
+                  self.afficherToast('success', 'Echeance insérée avec succès !');
                 })
                 .catch(function (error) {
-                    alert('OUPS');
+                  if(error.response.data.message == 'Client inconnu'){
+                    self.afficherToast('danger', 'Client inconnu !');
+                  }
                 });
     },
     recupererSocietes() {
@@ -129,10 +148,23 @@ export default {
           console.log(e);
         });
     },
+    recupererClients(){
+      http
+        .get("/listClient")
+        .then(response => {
+          this.clients = response.data;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
     onSubmit(evt) {
       evt.preventDefault();
       this.ajouterEC();
-      //alert(JSON.stringify(this.echeancierClient));
+      // Hide the modal manually
+      this.$nextTick(() => {
+          this.$refs.modal.hide()
+      });
     },
     onReset(evt) {
       evt.preventDefault();
@@ -151,13 +183,18 @@ export default {
       this.$nextTick(() => {
         this.show = true;
       });
+    },
+    clientSelected(client) {
+      this.clientSelectionne = client;
     }
   }, created() {
     this.recupererSocietes();
-  }
+    this.recupererClients();
+  }, 
+  mixins: [toast]
 };
-</script>
 </script>
 
 <style>
+
 </style>
