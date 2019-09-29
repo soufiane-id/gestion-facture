@@ -20,7 +20,35 @@
       :per-page="perPage"
       :current-page="currentPage"
       small
+      foot-clone
     >
+      <!-- <template slot="FOOT_societe.nomSociete">
+        <span></span>
+      </template>
+      <template slot="FOOT_client.nomClient">
+        <span></span>
+      </template>
+      <template slot="FOOT_numeroDocument">
+        <span></span>
+      </template>
+      <template slot="FOOT_dateFacture">
+        <span></span>
+      </template>
+      <template slot="FOOT_dateEcheance">
+        <span></span>
+      </template>
+      <template slot="FOOT_montantPaye">
+        <span></span>
+      </template>
+      <template slot="FOOT_resteAPayer">
+        <span></span>
+      </template>
+      <template slot="FOOT_montantFacture">
+        <span>Test</span>
+      </template>
+      <template slot="FOOT_dateReglementFacture">
+        <span></span>
+      </template> -->
     </b-table>
 
     <b-pagination
@@ -81,11 +109,6 @@ export default {
           //formatter: this.formaterDate
         },
         {
-          key: "montantFacture",
-          sortable: true,
-          class: 'text-center'
-        },
-        {
           key: "montantPaye",
           sortable: true,
           class: 'text-center'
@@ -100,9 +123,11 @@ export default {
           sortable: true,
           class: 'text-center'
           //formatter : this.formaterDate
-        }, 
+        },
         {
-          key: "action"
+          key: "montantFacture",
+          sortable: true,
+          class: 'text-center'
         }
       ]
     };

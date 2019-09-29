@@ -100,12 +100,7 @@ export default {
                 })
                 .catch(function (error) {
                     cpt--;
-                    if(error.response.data.message == 'Client inconnu'){
-                      self.afficherToast('danger', 'Client inconnu !');
-                    }else{
-                      self.afficherToast('danger', 'Erreur lors de l\'insertion d\'au moins une echeance !');
-                    }
-                    
+                    self.loader.hide();
                 });
         }
       }

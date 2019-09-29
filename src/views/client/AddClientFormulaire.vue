@@ -62,6 +62,9 @@ export default {
       self.afficherToast('success', 'Client inséré avec succès !');
       })
       .catch(function (error) {            
+      })
+      .finally(function(){
+        self.client.nomClient = '';
       });
     },
     onSubmit(evt) {

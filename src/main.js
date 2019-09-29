@@ -12,13 +12,13 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 import App from './App'
 import router from './router'
 import vueXlsxTable from 'vue-xlsx-table'
-//import VueMaterial from 'vue-material'
+import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.css'
 
 // todo
 // cssVars()
 
-Vue.use(BootstrapVue/*, VueMaterial*/)
+Vue.use(BootstrapVue, VueMaterial)
 Vue.use(Loading)
 Vue.use(vueXlsxTable, {rABS: false}) //Browser FileReader API have two methods to read local file readAsBinaryString and readAsArrayBuffer, default rABS false
 

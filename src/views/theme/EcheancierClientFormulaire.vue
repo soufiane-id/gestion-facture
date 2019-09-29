@@ -119,15 +119,12 @@ export default {
     this.echeancierClient.client = this.clientSelectionne;
     let self=this;
     http.post('echeancierClients',this.echeancierClient)
-                .then(function (response) {
-                  self.$emit('refresh', response.data);
-                  self.afficherToast('success', 'Echeance insérée avec succès !');
-                })
-                .catch(function (error) {
-                  if(error.response.data.message == 'Client inconnu'){
-                    self.afficherToast('danger', 'Client inconnu !');
-                  }
-                });
+        .then(function (response) {
+        self.$emit('refresh', response.data);
+        self.afficherToast('success', 'Echeance insérée avec succès !');
+          })
+        .catch(function (error) {
+        });
     },
     recupererSocietes() {
       http
@@ -194,7 +191,3 @@ export default {
   mixins: [toast]
 };
 </script>
-
-<style>
-
-</style>
