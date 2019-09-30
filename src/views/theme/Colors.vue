@@ -6,6 +6,16 @@
           <b-form-input type="text" id="name" v-model="filterSearch" placeholder="Filtrer ..."></b-form-input>
         </b-form-group>
       </b-col>
+      <b-col sm="3">
+        <b-form-group id="dateDu" label="Facture Du:" label-for="input-2">
+          <b-form-input id="input-2" type="date" v-model="startDate" required size="sm" placeholder="Du .."></b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col sm="3">
+        <b-form-group id="dateau" label="Facture Au:" label-for="input-2">
+          <b-form-input id="input-63" type="date" v-model="endDate" required size="sm" placeholder="Au .."></b-form-input>
+        </b-form-group>
+      </b-col>
     </b-row>
     <div class="card-tools">
         <b-button class="btn btn-success" style="float:right" v-b-modal="'formulaireAjoutEC'">Add New <i class="fas fa-user-plus fa-fw"></i></b-button>
@@ -22,7 +32,7 @@
       small
       foot-clone
     >
-      <!-- <template slot="FOOT_societe.nomSociete">
+      <template slot="FOOT_societe.nomSociete">
         <span></span>
       </template>
       <template slot="FOOT_client.nomClient">
@@ -44,11 +54,11 @@
         <span></span>
       </template>
       <template slot="FOOT_montantFacture">
-        <span>Test</span>
+        <span>{{montantFactureTotal}}</span>
       </template>
       <template slot="FOOT_dateReglementFacture">
         <span></span>
-      </template> -->
+      </template>
     </b-table>
 
     <b-pagination
@@ -65,12 +75,16 @@
 <script>
 import http from "../../client/http-common";
 import Formulaire from './EcheancierClientFormulaire';
+import moment from 'moment'
 
 export default {
   components: { Formulaire },
   data() {
     return {
       echeanciersClient: [],
+      montantFactureTotal: 0,
+      startDate: null,
+      endDate: null,
       filterSearch: '',
       mapSociete: [],
       perPage: 10,
@@ -160,19 +174,40 @@ export default {
         .catch(e => {
           console.log(e);
         });
-    }
+    },
+    convertDate(date) {
+      function pad(s) { return (s < 10) ? '0' + s : s; }
+      var d = new Date(date)
+      return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+     }
   },
   computed: {
     rows() {
       return this.echeanciersClient.length;
-    },filtredEcheanciers: function(){
+    },
+    filtredEcheanciers: function(){
       this.currentPage = 1;
-      return this.echeanciersClient.filter((ech) => {
+
+      let elementFiltres = this.echeanciersClient.filter((ech) => {
         return String(ech.montantFacture).match(this.filterSearch)
                 || ech.client.nomClient.toLowerCase().match(this.filterSearch.toLowerCase())
                 || ech.societe.nomSociete.toLowerCase().match(this.filterSearch.toLowerCase())
                 || ech.numeroDocument.toLowerCase().match(this.filterSearch.toLowerCase())
       });
+      // filtre sur les dates
+      if(this.startDate !== null && this.endDate !== null){
+        let vm = this;
+        elementFiltres = elementFiltres.filter(function (element) {
+          return vm.convertDate(vm.startDate) <= element.dateFacture && element.dateFacture <= vm.convertDate(vm.endDate);
+        });
+      }
+      // calculer la somme des factures.
+      if (elementFiltres.length == 0) {
+        this.montantFactureTotal = 0;
+      } else {
+        this.montantFactureTotal = elementFiltres.map(o=>o.montantFacture).reduce((a,c)=>a+c).toFixed(2);
+      }
+      return elementFiltres;
     }
   },
   created() {
