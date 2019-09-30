@@ -116,10 +116,10 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .add-new {
     float: right;
-		height: 30px;
+		height: 25px;
 		font-weight: bold;
 		font-size: 12px;
 		text-shadow: none;
