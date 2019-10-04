@@ -6,22 +6,15 @@
           <b-form-input type="text" id="name" v-model="filterSearch" placeholder="Filtrer ..."></b-form-input>
         </b-form-group>
       </b-col>
-      <b-col sm="2">
-        <span>Filtre sur les dates : </span>
-      </b-col>
-      <b-col sm="2">
-        <b-form-group id="dateDu" >
-          <b-form-input id="input-2" type="date" v-model="startDate" required size="sm" placeholder="Du .."></b-form-input>
-        </b-form-group>
-      </b-col>
-      <b-col sm="2">
-        <b-form-group id="dateau" >
-          <b-form-input id="input-63" type="date" v-model="endDate" required size="sm" placeholder="Au .."></b-form-input>
-        </b-form-group>
-      </b-col>
-      <b-button-group  size="sm" class="mx-1" style="height: 28px" @click="clearDatesFilter">
-        <b-btn>Cancel</b-btn>
-      </b-button-group>
+      <b-form inline style="margin-left:80px;">
+        <label class="mr-sm-2" for="inlineInput1">Facture du: </label>
+        <b-input id="input-2" type="date" v-model="startDate" required size="sm" placeholder="Du .."></b-input>
+        <label class="mx-sm-2" for="inlineInput2">Au: </label>
+        <b-input id="input-63" type="date" v-model="endDate" required size="sm" placeholder="Au .."></b-input>
+        <b-button-group  size="sm" class="mx-1" style="height: 28px" @click="clearDatesFilter">
+          <b-btn>Cancel</b-btn>
+        </b-button-group>
+      </b-form>
     </b-row>
     
     <div class="card-tools">
@@ -183,9 +176,17 @@ export default {
         });
     },
     convertDate(date) {
+      //Convert yyyy-mm-dd  to  dd-mm-yyyy
       function pad(s) { return (s < 10) ? '0' + s : s; }
       var d = new Date(date)
-      return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+      let stringDate = [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/')
+      return this.stringToDate(stringDate);
+     },
+     stringToDate(dateString){
+      var dateParts = dateString.split("/");
+      
+      // month is 0-based, that's why we need dataParts[1] - 1
+      return new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]); 
      },
      clearDatesFilter(){
        this.startDate = null;
@@ -209,7 +210,7 @@ export default {
       if(this.startDate !== null && this.endDate !== null){
         let vm = this;
         elementFiltres = elementFiltres.filter(function (element) {
-          return vm.convertDate(vm.startDate) <= element.dateFacture && element.dateFacture <= vm.convertDate(vm.endDate);
+          return vm.convertDate(vm.startDate) <=  vm.stringToDate(element.dateFacture) && vm.stringToDate(element.dateFacture) <= vm.convertDate(vm.endDate);
         });
       }
       // calculer la somme des factures.

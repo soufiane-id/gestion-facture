@@ -81,6 +81,15 @@ export default {
           /* On ajoute le champ societe pour toutes les lignes*/
           arrayRequest[i] = JSON.parse(this.insertAt(JSON.stringify(arrayRequest[i]), 1, societeString));
           
+          /*  Formattage des dates  */ 
+          const dateParts = arrayRequest[i].dateEcheance.split("/");
+          const regex = /^[0-9]{2}/;
+          if(dateParts[2].match(regex)){
+            dateParts[2] = '20'+dateParts[2];
+      	    // month is 0-based, that's why we need dataParts[1] - 1
+            arrayRequest[i].dateEcheance = dateParts[1] + '/' + (dateParts[0] - 1) + '/' + dateParts[2];
+          }
+
           /* suppression des virgules dans le montantFacture et resteAPayer */
           if(arrayRequest[i].montantFacture.includes(',')){
             arrayRequest[i].montantFacture = arrayRequest[i].montantFacture.replace(",", "");
