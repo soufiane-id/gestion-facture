@@ -149,7 +149,7 @@ export default {
   methods: {
     recupererEcheanciersClient() {
       http
-        .get("/listEcheancierClient")
+        .get("/listEcheancierClientNonRegle")
         .then(response => {
           this.echeanciersClient = response.data; // JSON are parsed automatically.
           console.log(response.data);

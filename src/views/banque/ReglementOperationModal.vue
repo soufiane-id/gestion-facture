@@ -17,18 +17,22 @@
           label="Montant de l'opération : "
         >{{operation.montantDebit ? operation.montantDebit : operation.montantCredit}}</b-form-group>
       </div>
-      <b-form-group label="Choix Opération : ">
-        <b-form-radio-group
-          id="radio-group-2"
-          v-model="selectedOperation"
-          name="radio-sub-component"
-        >
-          <b-form-radio :value="VALUE_DEBIT" @change="handleChange($event)">Débit</b-form-radio>
-          <b-form-radio :value="VALUE_CREDIT" @change="handleChange($event)">Crédit</b-form-radio>
-        </b-form-radio-group>
+      <b-form-group
+            label="Mode paiement"
+            :label-cols="2"
+            >
+            <b-form-radio-group id="basicInlineRadios"
+              :plain="true"
+              v-model="modeReglementRadio"
+              @change="handleChange($event)"
+              :options="[
+                {text: 'Virement',value: '1'},
+                {text: 'Autre',value: '2'}
+              ]" >
+            </b-form-radio-group>
       </b-form-group>
 
-      <div class="card-tools button-magic">
+      <div v-if="modeReglementRadio == 1" class="card-tools button-magic">
         <button
           @click="getEcheancesParMontantFacture"
           type="button"
@@ -38,26 +42,29 @@
         </button>
       </div>
 
-      <Autocomplete
-        v-if="selectedOperation == VALUE_CREDIT"
-        :items="listAutoComplete"
-        filterby="nomClient"
-        @change="onChange"
-        title="Chercher Client.."
-        @selected="clientSelected"
-      />
-      <Autocomplete
-        v-if="selectedOperation == VALUE_DEBIT"
-        :items="listAutoComplete"
-        filterby="nomFournisseur"
-        @change="onChange"
-        title="Chercher Frs.."
-        @selected="fournisseurSelected"
-      />
+      <!-- Nom Client AutoComplete-->
+      <div v-if="operation.montantCredit && modeReglementRadio == 1">
+        <span><strong>Nom Client : </strong></span>
+        <Autocomplete :suggestions="listAutoComplete" 
+              filterby="nomClient"
+              v-model="autoCompleteModel"
+              @selected="clientSelected">
+        </Autocomplete>
+      </div>
+
+      <!-- Nom Fournisseur AutoComplete-->
+      <div v-if="operation.montantDebit && modeReglementRadio == 1">
+        <span>Nom Fournisseur : </span>
+        <Autocomplete :suggestions="listAutoComplete" 
+              filterby="nomFournisseur"
+              v-model="autoCompleteModel"
+              @selected="fournisseurSelected">
+        </Autocomplete>
+      </div>
 
       <b-table
         ref="selectableTable"
-        v-if="selectedOperation == VALUE_CREDIT"
+        v-if="operation.montantCredit && modeReglementRadio == 1"
         id="my-table"
         selectable
         select-mode="multi"
@@ -76,7 +83,7 @@
 </template>
 
 <script>
-import Autocomplete from "../../commons/Autocomplete";
+import Autocomplete from "../../commons/AutoComplete2";
 import http from "../../client/http-common";
 import knapsack from "../../commons/subset/Knapsack";
 import toast from "../../commons/toastr"
@@ -88,11 +95,11 @@ export default {
   },
   data() {
     return {
+      autoCompleteModel:'', // Dette technique ! 
       listAutoComplete: [],
-      selectedOperation: "",
       selectedRow: [],
-      VALUE_DEBIT: "Débit",
-      VALUE_CREDIT: "Crédit",
+      modeReglementRadio: '',
+      montantFacturesSelectionnes: 0,
       resultatClient: [],
       resultatFournisseur: [],
       arrMontantFacture : [],
@@ -127,7 +134,7 @@ export default {
   methods: {
     handleChange: function(e) {
       console.log(e);
-      if (e === this.VALUE_DEBIT) {
+       if (e == 1 && this.operation.montantDebit != null ) {
         http
           .get("/listFournisseur")
           .then(response => {
@@ -136,7 +143,7 @@ export default {
           .catch(e => {
             console.log(e);
           });
-      } else if (e === this.VALUE_CREDIT) {
+      } else if (e == 1 && this.operation.montantCredit != null ) {
         http
           .get("/listClient")
           .then(response => {
@@ -176,15 +183,33 @@ export default {
       // do something with the current value
     },
     resetModal() {
-      this.selectedOperation = "";
+      this.modeReglementRadio = '';
+      this.autoCompleteModel = '';
+      this.listAutoComplete = [];
       this.resultatClient = [];
       this.selectedRow = [];
       this.arrMontantFacture = [];
     },
     onRowSelected(items) {
+      console.log('items', items)
       this.selectedRow = items;
     },
-    handleOk(bvModalEvt) {},
+    handleOk(bvModalEvt) {
+      console.log('selectedRow', this.selectedRow)
+      if(this.selectedRow.length < 1){
+        this.afficherToast('danger', 'Vous n\'avez sélectionné aucune écheance !');
+        return;
+      }
+      http.post('reglerOperations/' + this.operation.codeOperation + '/' + this.montantFacturesSelectionnes 
+              , this.selectedRow)
+        .then(function (response) {
+        
+        })
+        .catch(function (error) {
+      
+        });
+
+    },
     recupererMontantsFacture(resultat) {
       resultat.forEach(element => {
         this.arrMontantFacture.push(element.montantFacture);
@@ -218,7 +243,8 @@ export default {
   computed: {
     montantFactureTotal() {
       return this.selectedRow.reduce((accum, item) => {
-        return accum + item.montantFacture;
+        this.montantFacturesSelectionnes =  accum + item.montantFacture;
+        return this.montantFacturesSelectionnes;
       }, 0.0);
     }
   },
@@ -239,6 +265,6 @@ export default {
     }
 
 .button-magic {
-    margin-bottom:60px;
+    margin-bottom:40px;
 }
 </style>

@@ -15,10 +15,12 @@
 
       <!-- Nom Client AutoComplete-->
       <div>
-       <auto :suggestions="clients" 
-       filterby="nomClient" 
-       v-model="echeancierClient.client.nomClient"
-       @selected="clientSelected"></auto>
+        <span>Nom Client : </span>
+        <auto :suggestions="clients" 
+              filterby="nomClient" 
+              v-model="echeancierClient.client.nomClient"
+              @selected="clientSelected">
+        </auto>
       </div>
 
       <!-- Nom Client -->
