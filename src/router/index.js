@@ -21,6 +21,7 @@ const Tables = () => import('@/views/base/Tables')
 const Tabs = () => import('@/views/base/Tabs')
 const BanqueOverview = () => import('@/views/banque/BanqueOverview')
 const IntegrationBanque = () => import('@/views/banque/IntegrationBanque')
+const EtatBanque = () => import('@/views/banque/EtatBanque')
 const Breadcrumbs = () => import('@/views/base/Breadcrumbs')
 const Carousels = () => import('@/views/base/Carousels')
 const Collapses = () => import('@/views/base/Collapses')
@@ -143,6 +144,10 @@ export default new Router({
               path: 'integrationBanque',
               name: 'Integration Banque',
               component: IntegrationBanque
+            },{
+              path: 'etatBanque',
+              name: 'Etat Banque',
+              component: EtatBanque
             }
           ]
         },

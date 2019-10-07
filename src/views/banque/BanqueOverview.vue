@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ReglementOperationModule :operation='operationARegler' />
+    <ReglementOperationModule v-if="operationARegler.statutOperation != 'VALIDE'" :operation='operationARegler' @refresh = "recupererOperationsBancaire" />
     <b-table
       id="my-table"
       :items="operationsBancaire"

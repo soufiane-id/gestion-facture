@@ -41,9 +41,6 @@
       <template slot="FOOT_numeroDocument">
         <span></span>
       </template>
-      <template slot="FOOT_dateFacture">
-        <span></span>
-      </template>
       <template slot="FOOT_dateEcheance">
         <span></span>
       </template>
@@ -55,9 +52,6 @@
       </template>
       <template slot="FOOT_montantFacture">
         <span>{{montantFactureTotal}}</span>
-      </template>
-      <template slot="FOOT_dateReglementFacture">
-        <span></span>
       </template>
     </b-table>
 
@@ -110,13 +104,6 @@ export default {
           class: 'text-center'
         },
         {
-          key: "dateFacture",
-          sortable: true,
-          class: 'text-center'
-          // formatter : this.formaterDate,
-          // filterByFormatted : true
-        },
-        {
           key: "dateEcheance",
           sortable: true,
           class: 'text-center'
@@ -131,12 +118,6 @@ export default {
           key: "resteAPayer",
           sortable: true,
           class: 'text-center'
-        },
-        {
-          key: "dateReglementFacture",
-          sortable: true,
-          class: 'text-center'
-          //formatter : this.formaterDate
         },
         {
           key: "montantFacture",
@@ -210,7 +191,7 @@ export default {
       if(this.startDate !== null && this.endDate !== null){
         let vm = this;
         elementFiltres = elementFiltres.filter(function (element) {
-          return vm.convertDate(vm.startDate) <=  vm.stringToDate(element.dateFacture) && vm.stringToDate(element.dateFacture) <= vm.convertDate(vm.endDate);
+          return vm.convertDate(vm.startDate) <=  vm.stringToDate(element.dateEcheance) && vm.stringToDate(element.dateEcheance) <= vm.convertDate(vm.endDate);
         });
       }
       // calculer la somme des factures.

@@ -124,6 +124,11 @@ export default {
           class: "text-center"
         },
         {
+          key: "resteAPayer",
+          sortable: true,
+          class: "text-center"
+        },
+        {
           key: "montantFacture",
           sortable: true,
           class: "text-center"
@@ -200,10 +205,12 @@ export default {
         this.afficherToast('danger', 'Vous n\'avez sélectionné aucune écheance !');
         return;
       }
+      let self=this;
       http.post('reglerOperations/' + this.operation.codeOperation + '/' + this.montantFacturesSelectionnes 
               , this.selectedRow)
         .then(function (response) {
-        
+          // On rafraichi l'ensemble de la page des opérations ( penser à une amélioration !!!!!)
+          self.$emit('refresh');
         })
         .catch(function (error) {
       

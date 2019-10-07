@@ -51,6 +51,11 @@ export default {
           name: 'Liste réglements',
           url: '/banque/integrationBanque',
           icon: 'icon-usd'
+        },
+        {
+          name: 'Etat de la banque',
+          url: '/banque/etatBanque',
+          icon: 'icon-usd'
         }
       ]
     },
