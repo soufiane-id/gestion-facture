@@ -1,6 +1,7 @@
 <template>
   <div>
     <ReglementOperationModule v-if="operationARegler.statutOperation != 'VALIDE'" :operation='operationARegler' @refresh = "recupererOperationsBancaire" />
+    <ReglementChequeModule :operation='operationARegler' />
     <b-table
       id="my-table"
       :items="operationsBancaire"
@@ -15,6 +16,7 @@
     <template slot="action" slot-scope="operationsBancaire">
       <b-col cols="6" sm="4" md="2" xl class="mb-3 mb-xl-0">
         <b-button block variant="link" v-b-modal="'reglementOperation'" @click="reglerOperation(operationsBancaire.item)">Régler</b-button>
+        <b-button block variant="link" v-b-modal="'reglementCheque'" @click="reglerOperation(operationsBancaire.item)">Chèque</b-button>
       </b-col>
     </template> 
     </b-table>
@@ -24,9 +26,10 @@
 <script>
 import http from "../../client/http-common";
 import ReglementOperationModule from './ReglementOperationModal';
+import ReglementChequeModule from './ReglementChequeModal';
 
 export default {
-  components: { ReglementOperationModule },
+  components: { ReglementOperationModule, ReglementChequeModule },
 data() {
     return {
       operationsBancaire: [],
@@ -82,8 +85,6 @@ data() {
           : status === 'CREE' ? 'danger' : 'primary'
     },
     reglerOperation(operation){
-      //this.$router.push('/theme/colors');
-      console.log(operation)
       this.operationARegler = operation;
     }
   },

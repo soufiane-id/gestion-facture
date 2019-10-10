@@ -17,22 +17,7 @@
           label="Montant de l'opération : "
         >{{operation.montantDebit ? operation.montantDebit : operation.montantCredit}}</b-form-group>
       </div>
-      <b-form-group
-            label="Mode paiement"
-            :label-cols="2"
-            >
-            <b-form-radio-group id="basicInlineRadios"
-              :plain="true"
-              v-model="modeReglementRadio"
-              @change="handleChange($event)"
-              :options="[
-                {text: 'Virement',value: '1'},
-                {text: 'Autre',value: '2'}
-              ]" >
-            </b-form-radio-group>
-      </b-form-group>
-
-      <div v-if="modeReglementRadio == 1" class="card-tools button-magic">
+      <div class="card-tools button-magic">
         <button
           @click="getEcheancesParMontantFacture"
           type="button"
@@ -43,7 +28,7 @@
       </div>
 
       <!-- Nom Client AutoComplete-->
-      <div v-if="operation.montantCredit && modeReglementRadio == 1">
+      <div v-if="operation.montantCredit">
         <span><strong>Nom Client : </strong></span>
         <Autocomplete :suggestions="listAutoComplete" 
               filterby="nomClient"
@@ -53,7 +38,7 @@
       </div>
 
       <!-- Nom Fournisseur AutoComplete-->
-      <div v-if="operation.montantDebit && modeReglementRadio == 1">
+      <div v-if="operation.montantDebit">
         <span>Nom Fournisseur : </span>
         <Autocomplete :suggestions="listAutoComplete" 
               filterby="nomFournisseur"
@@ -64,7 +49,7 @@
 
       <b-table
         ref="selectableTable"
-        v-if="operation.montantCredit && modeReglementRadio == 1"
+        v-if="operation.montantCredit"
         id="my-table"
         selectable
         select-mode="multi"
@@ -98,7 +83,6 @@ export default {
       autoCompleteModel:'', // Dette technique ! 
       listAutoComplete: [],
       selectedRow: [],
-      modeReglementRadio: '',
       montantFacturesSelectionnes: 0,
       resultatClient: [],
       resultatFournisseur: [],
@@ -137,9 +121,10 @@ export default {
     };
   },
   methods: {
-    handleChange: function(e) {
-      console.log(e);
-       if (e == 1 && this.operation.montantDebit != null ) {
+    valoriserClientOuFrs() {
+      console.log('this.operation.montantDebit', this.operation.montantDebit)
+      console.log('this.operation.montantCredit', this.operation.montantCredit)
+       if (this.operation.montantDebit != null ) {
         http
           .get("/listFournisseur")
           .then(response => {
@@ -148,7 +133,7 @@ export default {
           .catch(e => {
             console.log(e);
           });
-      } else if (e == 1 && this.operation.montantCredit != null ) {
+      } else if (this.operation.montantCredit != null ) {
         http
           .get("/listClient")
           .then(response => {
@@ -188,7 +173,6 @@ export default {
       // do something with the current value
     },
     resetModal() {
-      this.modeReglementRadio = '';
       this.autoCompleteModel = '';
       this.listAutoComplete = [];
       this.resultatClient = [];
@@ -246,6 +230,14 @@ export default {
           console.log(e);
         });
     }
+  },
+   mounted() {
+     /* Evenement lors de l'ouverture du modal ayant l'id 'reglementOperation' */
+    this.$root.$on('bv::modal::show', (bvEvent, modalId) => {
+      if(modalId === 'reglementOperation'){
+        this.valoriserClientOuFrs();
+      }
+    })
   },
   computed: {
     montantFactureTotal() {

@@ -134,12 +134,12 @@ export default {
     },
     submit() {
       console.log(this.$loading);
-                  this.loader = this.$loading.show({
-                  // Optional parameters
-                  container: this.fullPage ? null : this.$refs.formContainer,
-                  canCancel: true,
-                  onCancel: this.onCancel,
-                });                
+            this.loader = this.$loading.show({
+            // Optional parameters
+            container: this.fullPage ? null : this.$refs.formContainer,
+            canCancel: true,
+            onCancel: this.onCancel,
+            });                
     }
   }, created() {
     http.get("/listSociete")

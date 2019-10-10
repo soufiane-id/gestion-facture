@@ -26,6 +26,10 @@
       small
       foot-clone
     >
+    <template slot="typeReglement" slot-scope="filtredEcheanciers">
+        <b-badge :variant="getBadge(filtredEcheanciers.item.typeReglement)">{{filtredEcheanciers.item.typeReglement}}</b-badge>
+    </template>
+
       <template slot="FOOT_societe.nomSociete">
         <span></span>
       </template>
@@ -49,6 +53,9 @@
       </template>
       <template slot="FOOT_montantFacture">
         <span>{{montantFactureTotal}}</span>
+      </template>
+      <template slot="FOOT_typeReglement">
+        <span></span>
       </template>
       <template slot="FOOT_dateReglementFacture">
         <span></span>
@@ -127,6 +134,10 @@ export default {
           key: "montantFacture",
           sortable: true,
           class: 'text-center'
+        },
+        {
+          key: "typeReglement",
+          class: 'text-center'
         }
       ]
     };
@@ -159,7 +170,10 @@ export default {
      clearDatesFilter(){
        this.startDate = null;
        this.endDate = null;
-     }
+     },
+    getBadge (status) {
+      return status === 'VIREMENT' ? 'success' : 'warning'
+    }
   },
   computed: {
     rows() {
