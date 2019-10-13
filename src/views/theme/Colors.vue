@@ -1,13 +1,16 @@
 <template>
   <div >
     <b-row>
-      <b-col sm="3">
-        <b-form-group>
-          <b-form-input type="text" id="name" v-model="filterSearch" placeholder="Filtrer ..."></b-form-input>
-        </b-form-group>
-      </b-col>
-      <b-form inline style="margin-left:80px;">
-        <label class="mr-sm-2" for="inlineInput1">Facture du: </label>
+      <!-- <b-col sm="2"> -->
+        <!-- <b-form-group>
+          <b-form-input type="text" v-model="filterSearchSociete" placeholder="Filtre sociétés..."></b-form-input>
+          <b-form-input type="text" v-model="filterSearchClient" placeholder="Filtre clients..."></b-form-input>
+        </b-form-group> -->
+      <!-- </b-col> -->
+      <b-form inline >
+        <b-form-input type="text" v-model="filterSearchSociete" placeholder="Filtre sociétés..."></b-form-input>
+        <b-form-input type="text" v-model="filterSearchClient" placeholder="Filtre clients..."></b-form-input>
+        <label class="mr-sm-2" for="inlineInput1" style="margin-left:80px;">Facture du: </label>
         <b-input id="input-2" type="date" v-model="startDate" required size="sm" placeholder="Du .."></b-input>
         <label class="mx-sm-2" for="inlineInput2">Au: </label>
         <b-input id="input-63" type="date" v-model="endDate" required size="sm" placeholder="Au .."></b-input>
@@ -79,7 +82,8 @@ export default {
       montantFactureTotal: 0,
       startDate: null,
       endDate: null,
-      filterSearch: '',
+      filterSearchSociete: '',
+      filterSearchClient: '',
       mapSociete: [],
       perPage: 10,
       currentPage: 1,
@@ -181,26 +185,28 @@ export default {
     filtredEcheanciers: function(){
       this.currentPage = 1;
 
-      let elementFiltres = this.echeanciersClient.filter((ech) => {
-        return String(ech.montantFacture).match(this.filterSearch)
-                || ech.client.nomClient.toLowerCase().match(this.filterSearch.toLowerCase())
-                || ech.societe.nomSociete.toLowerCase().match(this.filterSearch.toLowerCase())
-                || ech.numeroDocument.toLowerCase().match(this.filterSearch.toLowerCase())
+      let societesFiltres = this.echeanciersClient.filter((ech) => {
+        return ech.societe.nomSociete.toLowerCase().match(this.filterSearchSociete.toLowerCase())
       });
+
+      let clientsFiltres = societesFiltres.filter((ech) => {
+        return ech.client.nomClient.toLowerCase().match(this.filterSearchClient.toLowerCase())
+      });
+
       // filtre sur les dates
       if(this.startDate !== null && this.endDate !== null){
         let vm = this;
-        elementFiltres = elementFiltres.filter(function (element) {
+        clientsFiltres = clientsFiltres.filter(function (element) {
           return vm.convertDate(vm.startDate) <=  vm.stringToDate(element.dateEcheance) && vm.stringToDate(element.dateEcheance) <= vm.convertDate(vm.endDate);
         });
       }
       // calculer la somme des factures.
-      if (elementFiltres.length == 0) {
+      if (clientsFiltres.length == 0) {
         this.montantFactureTotal = 0;
       } else {
-        this.montantFactureTotal = elementFiltres.map(o=>o.montantFacture).reduce((a,c)=>a+c).toFixed(2);
+        this.montantFactureTotal = clientsFiltres.map(o=>o.montantFacture).reduce((a,c)=>a+c).toFixed(2);
       }
-      return elementFiltres;
+      return clientsFiltres;
     }
   },
   created() {
@@ -209,3 +215,16 @@ export default {
   }
 };
 </script>
+<style>
+.add-new {
+    float: right;
+		height: 25px;
+		font-weight: bold;
+		font-size: 12px;
+		text-shadow: none;
+		min-width: 100px;
+		border-radius: 50px;
+    line-height: 13px;
+    margin-bottom: 5px;
+    }
+</style>

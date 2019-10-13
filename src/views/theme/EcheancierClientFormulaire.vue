@@ -42,12 +42,12 @@
 
       <!-- Date de facture -->
       <b-form-group id="input-group-22" label="Date Facture:" label-for="input-2">
-        <b-form-input id="input-2"  type = "date" v-model="echeancierClient.dateFacture" required size="sm" placeholder="Entrer la date de la facture.."></b-form-input>
+        <b-form-input id="input-2"  type = "date" v-model="echeancierClient.dateFacture" size="sm" placeholder="Entrer la date de la facture.."></b-form-input>
       </b-form-group>
 
       <!-- Date Echeance -->
       <b-form-group id="input-group-4" label="Date Echeance:" label-for="input-2">
-        <b-form-input id="input-2" type = "date" v-model="echeancierClient.dateEcheance" required size="sm" placeholder="Entrer la date d\'echeance.."></b-form-input>
+        <b-form-input id="input-2" type = "date" v-model="echeancierClient.dateEcheance" size="sm" placeholder="Entrer la date d\'echeance.."></b-form-input>
       </b-form-group>
 
       <!-- Montant Facture -->
@@ -57,25 +57,18 @@
 
       <!-- Montant Paye -->
       <b-form-group id="input-group-6" label="Montant payé:" label-for="input-2">
-        <b-form-input id="input-2" v-model="echeancierClient.montantPaye" required size="sm" placeholder="Entrer le montant payé .."></b-form-input>
+        <b-form-input id="input-2" v-model="echeancierClient.montantPaye" size="sm" placeholder="Entrer le montant payé .."></b-form-input>
       </b-form-group>
-
-      <!-- Reste A payé -->
-      <!-- <b-form-group id="input-group-7" label="Reste à payer:" label-for="input-2">
-        <b-form-input id="input-2" v-model="echeancierClient.resteAPayer" size="sm" placeholder="Entrer le reste à payer .."></b-form-input>
-      </b-form-group> -->
 
       <!-- Date Reglement Facture -->
       <b-form-group id="input-group-8" label="Date Reglement Facture:" label-for="input-2">
-        <b-form-input id="input-2" type = "date" v-model="echeancierClient.dateReglementFacture" required size="sm" placeholder="Entrer la date de reglement.."></b-form-input>
+        <b-form-input id="input-2" type = "date" v-model="echeancierClient.dateReglementFacture" size="sm" placeholder="Entrer la date de reglement.."></b-form-input>
       </b-form-group>
       
       <b-button type="submit" variant="primary">Submit</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
-    <!-- <b-card class="mt-3" header="Form Data Result">
-      <pre class="m-0">{{ echeancierClient }}</pre>
-    </b-card> -->
+
     </b-modal>
   </div>
 </template>
@@ -113,12 +106,18 @@ export default {
   },
   methods: {
     formatDate(date) {
-    return moment(date).format('DD/MM/YYYY');
+      if(date){
+        console.log("1")
+        return moment(date).format('DD/MM/YYYY');
+      }
+      console.log("2")
+      return null;
   },ajouterEC(){
     this.echeancierClient.dateFacture = this.formatDate(this.echeancierClient.dateFacture);
     this.echeancierClient.dateEcheance = this.formatDate(this.echeancierClient.dateEcheance);
     this.echeancierClient.dateReglementFacture = this.formatDate(this.echeancierClient.dateReglementFacture);
     this.echeancierClient.client = this.clientSelectionne;
+    alert('stop')
     let self=this;
     http.post('echeancierClients',this.echeancierClient)
         .then(function (response) {

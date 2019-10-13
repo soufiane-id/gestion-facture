@@ -5,6 +5,7 @@ const toast = {
     error: (message, title = 'Error') => {
         return iZtoast.error({
             title: title,
+            timeout: 10000,
             message: message,
             position: 'topCenter'
         });

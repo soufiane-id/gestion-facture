@@ -26,8 +26,8 @@
       small
       foot-clone
     >
-    <template slot="typeReglement" slot-scope="filtredEcheanciers">
-        <b-badge :variant="getBadge(filtredEcheanciers.item.typeReglement)">{{filtredEcheanciers.item.typeReglement}}</b-badge>
+    <template slot="moyenPaiement" slot-scope="filtredEcheanciers">
+        <b-badge :variant="getBadge(filtredEcheanciers.item.moyenPaiement)">{{filtredEcheanciers.item.moyenPaiement}}</b-badge>
     </template>
 
       <template slot="FOOT_societe.nomSociete">
@@ -54,7 +54,7 @@
       <template slot="FOOT_montantFacture">
         <span>{{montantFactureTotal}}</span>
       </template>
-      <template slot="FOOT_typeReglement">
+      <template slot="FOOT_moyenPaiement">
         <span></span>
       </template>
       <template slot="FOOT_dateReglementFacture">
@@ -136,7 +136,7 @@ export default {
           class: 'text-center'
         },
         {
-          key: "typeReglement",
+          key: "moyenPaiement",
           class: 'text-center'
         }
       ]

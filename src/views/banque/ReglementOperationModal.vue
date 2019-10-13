@@ -86,6 +86,7 @@ export default {
       montantFacturesSelectionnes: 0,
       resultatClient: [],
       resultatFournisseur: [],
+      idClientSelected: '',
       arrMontantFacture : [],
       perPage: 10,
       currentPage: 1,
@@ -149,6 +150,7 @@ export default {
       console.log(
         `Customer Selected:\nid: ${client.idClient}\nname: ${client.nomClient}`
       );
+      this.idClientSelected = client.idClient;
       this.recupererEcheancierParClient(client.idClient);
     },
     fournisseurSelected(fournisseur) {
@@ -221,7 +223,7 @@ export default {
             return;
         }
       http
-        .get("/getEcheanciersByMontants/" + result)
+        .get("/getEcheanciersByMontants/" + result + '/' + this.idClientSelected)
         .then(response => {
           this.resultatClient = response.data;
           this.afficherToast('success', 'Solution trouvée .. ');

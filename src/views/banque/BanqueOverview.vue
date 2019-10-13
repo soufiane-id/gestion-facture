@@ -15,8 +15,15 @@
     </template>
     <template slot="action" slot-scope="operationsBancaire">
       <b-col cols="6" sm="4" md="2" xl class="mb-3 mb-xl-0">
-        <b-button block variant="link" v-b-modal="'reglementOperation'" @click="reglerOperation(operationsBancaire.item)">Régler</b-button>
-        <b-button block variant="link" v-b-modal="'reglementCheque'" @click="reglerOperation(operationsBancaire.item)">Chèque</b-button>
+        <font-awesome-icon icon="exchange-alt"
+           v-b-modal="'reglementOperation'" 
+           @click="reglerOperation(operationsBancaire.item)" 
+           v-b-tooltip.hover title="Virement" size="lg" :style="{color: '5c9ea9'}"/>
+        <font-awesome-icon 
+          icon="money-check-alt" 
+          v-b-modal="'reglementCheque'" 
+          @click="reglerOperation(operationsBancaire.item)" 
+          v-b-tooltip.hover title="Chèque / Espèce" size="lg" :style="{color: 'b1b135'}"/>
       </b-col>
     </template> 
     </b-table>
@@ -82,7 +89,7 @@ data() {
     getBadge (status) {
       return status === 'VALIDE' ? 'success'
         : status === 'EN_COURS' ? 'warning'
-          : status === 'CREE' ? 'danger' : 'primary'
+          : status === 'A_TRAITER' ? 'danger' : 'primary'
     },
     reglerOperation(operation){
       this.operationARegler = operation;

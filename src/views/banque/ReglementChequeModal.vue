@@ -57,17 +57,32 @@
              <template slot="FOOT_montantFacture">{{ montantFactureTotal }}</template>
             </b-table>
             <button
-               @click="reglerOperation(k)"
+               @click="ajouterOperation(k)"
                v-if="k == tableAAfficher"
                type="button"
                class="btn btn-primary"
-            > Régler
+            > Ajouter
             </button>
           </b-card>
         </div>
 
         <!--  PAGE 3  -->
-        <div slot="page3">
+        <div slot="page3" v-for="(operation,k) in echeanciersRecap" :key="k">
+           <b-card class="bg-secondary text-center">
+              <p> Montant :  {{operation.montant}}</p>
+              <p> Nom client :  {{operation.echeances[0].client.nomClient}}</p>
+              <p>
+             <ul>           
+               <li v-for="(row, k) in operation.echeances" :key="k"> 
+              <b-card class="bg-info text-center">
+              <span>Numéro Document : {{ row.numeroDocument }}</span> <br> 
+              <span>MontantFacture : {{ row.montantFacture }}</span> <br> 
+              <span>Nom Société : {{ row.societe.nomSociete }}</span>
+              </b-card>
+              </li>
+              </ul>
+              </p> 
+          </b-card> 
         </div>
         </vue-good-wizard>  
     </b-modal>
@@ -79,6 +94,7 @@
 import VueGoodWizard from '../../commons/Wizard';
 import Auto from "../../commons/AutoComplete2";
 import http from "../../client/http-common";
+import toast from "../../commons/toast/toast"
 
 export default {
   components: { VueGoodWizard, Auto },
@@ -127,26 +143,19 @@ export default {
       ],
       steps: [
         {
-          label: 'Select Items',
+          label: 'Identifier les Clients',
           slot: 'page1',
           // options: {
           //   nextDisabled: false,
           // }
         },
         {
-          label: 'Add Constraints',
+          label: 'Selectionner les factures',
           slot: 'page2',
         },
         {
-          label: 'Review',
+          label: 'Recapitulatif',
           slot: 'page3',
-        },
-        {
-          label: 'Apply',
-          slot: 'page4',
-          options: {
-            nextDisabled: true,
-          }
         }
       ],
       inputs: [
@@ -157,7 +166,8 @@ export default {
                 },
                 montant:''
             }
-       ]
+       ],
+       echeanciersRecap: []
     };
   },
   methods: {
@@ -165,7 +175,12 @@ export default {
       console.log('next clicked', currentPage)
       switch(currentPage) {
         case 0: 
+          console.log('this.inputs', this.inputs)
           return this.step1Valid() ? true : false;          
+          break;
+        case 2:
+          console.log('click save')
+          this.reglerOperation(this.echeanciersRecap)   
           break;
         default:
           console.log('Sorry, we are out of pages');
@@ -175,6 +190,11 @@ export default {
     },
     backClicked(currentPage) {
       console.log('back clicked', currentPage);
+      switch(currentPage) {
+        case 1: 
+          this.tableAAfficher = -1;
+          break;
+      }
       return true; //return false if you want to prevent moving to previous page
     },
     enableSave() {
@@ -184,8 +204,14 @@ export default {
       this.$refs.wizard.goTo(this.cStep++);
     },
     add(index) {
-      this.cpt++;
-      this.inputs.push({client: {idClient: "",nomClient: ""},montant:''});
+      /* On vérifie d'abord que le client est saisi avant de dajouter une nouvelle ligne*/
+      if(this.inputs[this.inputs.length-1].client.idClient){
+        this.cpt++;
+        this.inputs.push({client: {idClient: "",nomClient: ""},montant:''});
+      }else{
+        toast.error('Veuillez d\'abord mentionner un client');
+      }
+      
     },
     remove(index) {
       this.cpt--;
@@ -194,6 +220,7 @@ export default {
     clientSelected(client) {
       this.inputs[this.cpt].client.idClient = client.idClient;
       this.inputs[this.cpt].client.nomClient = client.nomClient;
+      console.log('clientSelected : this.iputs', this.inputs)
       //this.clientSelectionne = client;
     },
     recupererClients(){
@@ -216,24 +243,42 @@ export default {
           console.log(e);
         });
     },
-    reglerOperation(k){
-      console.log('selectedRow', this.selectedRow)
-      if(this.selectedRow.length < 1){
-        this.afficherToast('danger', 'Vous n\'avez sélectionné aucune écheance !');
-        return;
+    ajouterOperation(k){
+      let factures = {};
+      factures.key = k;
+      factures.montant = this.inputs[k].montant;
+      factures.montantSelectionne = this.montantFacturesSelectionnes;
+      factures.echeances = this.selectedRow;
+      console.log('factures', factures)
+      // On test si le client n'a pas deja emis de factures
+      const keyExist = this.echeanciersRecap.some((item) => {
+        return item.key == k
+      })
+      if(keyExist){
+          const filtred = this.echeanciersRecap.filter((item) => {
+            return item.key != k 
+          })
+          this.echeanciersRecap = filtred;
       }
+      this.echeanciersRecap.push(factures)
+      toast.success("OK !");
+    },
+    reglerOperation(recap){
       let self=this;
-      http.post('reglerOperationsCheque/' + this.operation.codeOperation 
-                                    + '/' + this.inputs[k].montant 
-                                    + '/' + this.montantFacturesSelectionnes 
-                                    , this.selectedRow)
+      for (let i in recap) {
+        http.post('reglerOperationsCheque/' + this.operation.codeOperation 
+                                    + '/' + recap[i].montant
+                                    + '/' + recap[i].montantSelectionne
+                                    , recap[i].echeances)
         .then(function (response) {
-          // On rafraichi l'ensemble de la page des opérations ( penser à une amélioration !!!!!)
-          //self.$emit('refresh');
+          toast.success({
+            message: "Successfully inserted record!"
+          });
         })
         .catch(function (error) {
       
         });
+      }
     },
     afficherDetailClient(k){
       this.recupererEcheancierParClient(this.inputs[k].client.idClient)
