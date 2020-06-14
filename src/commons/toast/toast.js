@@ -7,14 +7,37 @@ const toast = {
             title: title,
             timeout: 10000,
             message: message,
-            position: 'topCenter'
+            position: 'topRight'
         });
     },
     success: (message, title = 'Success') => {
         return iZtoast.success({
             title: title,
             message: message,
-            position: 'topCenter'
+            position: 'topRight'
+        });
+    }, 
+    confirm: (message, callback) => {
+        return iZtoast.question({
+            timeout: 20000,
+            close: false,
+            overlay: true,
+            toastOnce: true,
+            message,
+            id: 'question',
+            zindex: 999,
+            position: 'center',
+            buttons: [
+                ['<button>OUI</button>', function (instance, toast) {
+                    if(typeof callback === 'function'){
+                        callback();
+                    }
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                }],
+                ['<button><b>NON</b></button>', function (instance, toast) {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                }, true]
+            ]
         });
     }
 };

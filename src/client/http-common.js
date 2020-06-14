@@ -5,6 +5,7 @@ const instance = axios.create({
   baseURL: 'http://localhost:8080',
   headers: {
     "Content-type": "application/json"
+    //'Access-Control-Allow-Origin': '*'
   },
   params: {} // do not remove this, its added to add params later in the config
 });
