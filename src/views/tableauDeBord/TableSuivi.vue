@@ -53,7 +53,7 @@
           <b-td class="text-center"
             ><b-badge
               variant="danger"
-              @click="evolutionNote(client.nomClient)"
+              @click="valoriserClient(client.nomClient)"
               v-b-modal="'historiqueNotes'"
               >{{ client.noteClient.libelle }}</b-badge
             ></b-td
@@ -62,13 +62,12 @@
       </b-tbody>
     </b-table-simple>
     <b-button @click="test"> TEST</b-button>
-    <historique-notes :historique="dataHistoriqueNotes" lazy="true" />
+    <historique-notes />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import http from "../../client/http-common";
 import historiqueNotes from "./HistoriqueNotes";
 
 export default {
@@ -76,31 +75,14 @@ export default {
     historiqueNotes,
   },
   data() {
-    return {
-      dataHistoriqueNotes: {},
-    };
+    return {};
   },
   methods: {
     test() {
       console.log("reeees ", this.getAllData);
     },
-    evolutionNote(client) {
-      let self = this;
-      console.log(self.dateSuiviClient);
-      http
-        .get("/lastNotesClient", {
-          params: {
-            nomClient: client,
-            date: self.dateSuiviClient,
-          },
-        })
-        .then((response) => {
-          console.log(response.data);
-          this.dataHistoriqueNotes = response.data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+    valoriserClient(client) {
+      this.$store.commit("updateClientHistorique", client);
     },
     getRowVariant(degre) {
       return degre == 1

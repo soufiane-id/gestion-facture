@@ -6,33 +6,49 @@
       title="Historique des notes"
       size="lg"
       header-bg-variant="light"
+      @hidden="resetModal"
     >
-      <b-table striped hover :items="rows" :fields="header"></b-table>
+      <b-table striped hover :items="rows" bordered></b-table>
     </b-modal>
   </div>
 </template>
 
 <script>
+import http from "../../client/http-common";
 export default {
-  props: ["historique"],
   data() {
     return {
-      header: [],
       rows: [],
     };
   },
   methods: {
-    formatData() {
-      console.log("this.historiqueeee", this.historique);
-      this.header = Object.keys(this.historique);
-      this.rows = Object.values(this.historique);
+    getLast6Notes(client) {
+      let self = this;
+      http
+        .get("/lastNotesClient", {
+          params: {
+            nomClient: client,
+            date: self.$store.state.suiviClient.dateSuiviClient,
+          },
+        })
+        .then((response) => {
+          self.rows.push(response.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    resetModal() {
+      this.rows.splice(0, this.rows.length);
     },
   },
-  created() {
-    //alert("creation popup historique note");
-    this.formatData();
+  mounted() {
+    /* Evenement lors de l'ouverture du modal ayant l'id 'historiqueNotes' */
+    this.$root.$on("bv::modal::show", (bvEvent, modalId) => {
+      if (modalId === "historiqueNotes") {
+        this.getLast6Notes(this.$store.state.suiviClient.clientHistorique);
+      }
+    });
   },
 };
 </script>
-
-<style></style>

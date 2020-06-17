@@ -1,5 +1,6 @@
 const state = {
   dateSuiviClient: null,
+  clientHistorique: {}, // stocke la note du client des 6 dernieres semaines
 };
 
 const getters = {
@@ -12,6 +13,9 @@ const mutations = {
   setDateSuiviClient: (state, payload) => {
     console.log("mutation setDateSuiviClient", payload);
     state.dateSuiviClient = payload;
+  },
+  updateClientHistorique: (state, payload) => {
+    state.clientHistorique = payload;
   },
 };
 
