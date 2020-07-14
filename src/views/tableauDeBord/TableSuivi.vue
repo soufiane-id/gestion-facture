@@ -1,13 +1,6 @@
 <template>
   <div>
-    <b-table-simple
-      hover
-      small
-      caption-top
-      responsive
-      class="tableFixHead"
-      bordered
-    >
+    <b-table-simple hover small caption-top responsive class="tableFixHead" bordered>
       <b-thead head-variant="dark">
         <b-tr>
           <b-th scope="col" class="text-center">Catégorie</b-th>
@@ -18,7 +11,7 @@
           <b-th scope="col" class="text-center">S-1</b-th>
           <b-th scope="col" class="text-center">S</b-th>
           <!-- <b-th scope="col">Achats</b-th>
-          <b-th scope="col">Payé</b-th> -->
+          <b-th scope="col">Payé</b-th>-->
           <b-th scope="col" class="text-center">Note Client</b-th>
         </b-tr>
       </b-thead>
@@ -28,8 +21,7 @@
           v-if="category.length > 0"
           :rowspan="category.length + 1"
           class="text-center"
-          >{{ category[0].noteClient.libelle }}</b-th
-        >
+        >{{ category[0].noteClient.libelle }}</b-th>
         <b-tr
           v-for="client in category"
           :class="getRowVariant(client.noteClient.degre)"
@@ -37,31 +29,31 @@
         >
           <b-td class="text-center" style="font-family: 'Lucida Console'">
             {{ client.nomClient }}
-            <b-badge v-if="client.seuil && client.seuil > 0" variant="danger">{{
+            <!-- <b-badge v-if="client.seuil && client.seuil > 0" variant="danger">
+              {{
               client.seuil
-            }}</b-badge>
+              }}
+            </b-badge>-->
           </b-td>
-          <b-td class="text-center"
-            ><strong>{{ client.montantSolde }}</strong></b-td
-          >
+          <b-td class="text-center">
+            <strong>{{ client.montantSolde }}</strong>
+          </b-td>
           <b-td class="text-center">{{ client.retard }}</b-td>
           <b-td class="text-center">{{ client.montantSemaine_2 }}</b-td>
           <b-td class="text-center">{{ client.montantSemaine_1 }}</b-td>
           <b-td class="text-center">{{ client.montantSemaineEnCours }}</b-td>
           <!-- <b-td>{{ client.montantAchatsSemaineEnCours }}</b-td>
-          <b-td>{{ client.montantPayeSemaineEnCours }}</b-td> -->
-          <b-td class="text-center"
-            ><b-badge
-              variant="danger"
+          <b-td>{{ client.montantPayeSemaineEnCours }}</b-td>-->
+          <b-td class="text-center">
+            <b-badge
+              :variant="getBadge(client.noteClient.degre)"
               @click="valoriserClient(client.nomClient)"
               v-b-modal="'historiqueNotes'"
-              >{{ client.noteClient.libelle }}</b-badge
-            ></b-td
-          >
+            >{{ client.noteClient.libelle }}</b-badge>
+          </b-td>
         </b-tr>
       </b-tbody>
     </b-table-simple>
-    <b-button @click="test"> TEST</b-button>
     <historique-notes />
   </div>
 </template>
@@ -72,15 +64,12 @@ import historiqueNotes from "./HistoriqueNotes";
 
 export default {
   components: {
-    historiqueNotes,
+    historiqueNotes
   },
   data() {
     return {};
   },
   methods: {
-    test() {
-      console.log("reeees ", this.getAllData);
-    },
     valoriserClient(client) {
       this.$store.commit("updateClientHistorique", client);
     },
@@ -95,11 +84,22 @@ export default {
         ? "table-success"
         : "table-secondary";
     },
+    getBadge(degre) {
+      return degre == 1
+        ? "danger"
+        : degre == 2
+        ? "warning"
+        : degre == 3 || degre == 4 || degre == 5
+        ? "primary"
+        : degre == 6 || degre == 7 || degre == 8 || degre == 9
+        ? "success"
+        : "secondary";
+    }
   },
   computed: {
-    ...mapGetters(["getAllData"]),
+    ...mapGetters(["getAllData"])
   },
-  props: ["dateSuiviClient"],
+  props: ["dateSuiviClient"]
 };
 </script>
 

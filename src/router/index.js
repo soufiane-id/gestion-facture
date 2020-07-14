@@ -27,16 +27,20 @@ const FournisseursView = () => import("@/views/partenaires/FournisseursView");
 const EcheancierClientView = () =>
   import("@/views/encours/client/EcheancierClientView");
 
+// Views - Login
+const LoginPage = () => import("@/views/pages/account/Login");
+const RegisterPage = () => import("@/views/pages/account/Register");
+
 Vue.use(Router);
 
-export default new Router({
-  mode: "hash", // https://router.vuejs.org/api/#mode
+const router = new Router({
+  mode: "history", // https://router.vuejs.org/api/#mode
   linkActiveClass: "open active",
   scrollBehavior: () => ({ y: 0 }),
   routes: [
     {
       path: "/",
-      redirect: "/dashboard",
+      redirect: "/accueil",
       name: "Home",
       component: DefaultContainer,
       children: [
@@ -157,5 +161,42 @@ export default new Router({
         },
       ],
     },
+    {
+      path: "/",
+      redirect: "/login",
+      name: "Acc",
+      component: {
+        render(c) {
+          return c("router-view");
+        },
+      },
+      children: [
+        {
+          path: "login",
+          name: "Login",
+          component: LoginPage,
+        },
+        {
+          path: "register",
+          name: "Register",
+          component: RegisterPage,
+        },
+      ],
+    },
   ],
+});
+export default router
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register', '/home'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = JSON.parse(localStorage.getItem('userInfo'));
+
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next('/login');
+  } else {
+    next();
+  }
 });

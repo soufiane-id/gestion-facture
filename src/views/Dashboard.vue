@@ -10,34 +10,23 @@
             <b-card-body class="pb-0">
               <h1
                 class="mb-0 text-center"
-                v-b-tooltip.hover.html.bottom.v-dark="nomsClientsDangereux"
-              >
-                {{ calculClientDangereux.length }}
-              </h1>
+                v-b-tooltip.hover.html.left.v-dark="nomsClientsDangereux"
+              >{{ calculClientDangereux.length }}</h1>
               <p class="text-center">Client(s) Dangereux</p>
             </b-card-body>
             <div class="progress-group">
               <div class="progress-group-header">
-                <span class="ml-auto font-weight-bold"
-                  >{{ pourcentageClientsDangereux }} %
-                </span>
+                <span class="ml-auto font-weight-bold">{{ pourcentageClientsDangereux }} %</span>
               </div>
               <div class="progress-group-bars">
-                <b-progress
-                  class="progress-xs"
-                  :value="pourcentageClientsDangereux"
-                  variant="dark"
-                ></b-progress>
+                <b-progress class="progress-xs" :value="pourcentageClientsDangereux" variant="dark"></b-progress>
               </div>
             </div>
           </b-card>
 
           <b-card no-body class="bg-info">
             <b-card-body class="pb-0">
-              <h1
-                class="mb-0 text-center"
-                v-b-tooltip.hover.html.bottom.v-dark="nomsClientsAbsents"
-              >
+              <h1 class="mb-0 text-center" v-b-tooltip.hover.html.left.v-dark="nomsClientsAbsents">
                 {{ clientsAbsentsSemaineEnCours.length }} sur
                 {{ historiqueClientActifs.length }}
               </h1>
@@ -45,16 +34,10 @@
             </b-card-body>
             <div class="progress-group">
               <div class="progress-group-header">
-                <span class="ml-auto font-weight-bold"
-                  >{{ pourcentageClientsAbsents }} %
-                </span>
+                <span class="ml-auto font-weight-bold">{{ pourcentageClientsAbsents }} %</span>
               </div>
               <div class="progress-group-bars">
-                <b-progress
-                  class="progress-xs"
-                  :value="pourcentageClientsAbsents"
-                  variant="dark"
-                ></b-progress>
+                <b-progress class="progress-xs" :value="pourcentageClientsAbsents" variant="dark"></b-progress>
               </div>
             </div>
           </b-card>
@@ -63,11 +46,9 @@
             <b-card-body class="pb-0">
               <h1
                 class="mb-0 text-center"
-                v-b-tooltip.hover.html.bottom.v-dark="nomsClientsAlerte"
+                v-b-tooltip.hover.html.top.v-dark="nomsClientsAlerte"
                 variant="success"
-              >
-                {{ clientsAlerteComm.length }}
-              </h1>
+              >{{ clientsAlerteComm.length }}</h1>
               <p class="text-center">Client(s) avec alerte commercial</p>
             </b-card-body>
           </b-card>
@@ -76,10 +57,8 @@
             <b-card-body class="pb-0">
               <h1
                 class="mb-0 text-center"
-                v-b-tooltip.hover.html.bottom.v-dark="nomsClientsUrgence"
-              >
-                {{ clientsUrgenceComm.length }}
-              </h1>
+                v-b-tooltip.hover.html.top.v-dark="nomsClientsUrgence"
+              >{{ clientsUrgenceComm.length }}</h1>
               <p class="text-center">Client(s) avec urgence commercial</p>
             </b-card-body>
           </b-card>
@@ -105,7 +84,7 @@ export default {
       nomsClientsDangereux: "",
       nomsClientsAbsents: "",
       nomsClientsAlerte: "",
-      nomsClientsUrgence: "",
+      nomsClientsUrgence: ""
     };
   },
   methods: {
@@ -114,47 +93,47 @@ export default {
       http
         .get("/getHistoriqueClient", {
           params: {
-            date: date,
-          },
+            date: date
+          }
         })
-        .then((response) => {
+        .then(response => {
           this.setHistoriqueClient(response.data);
           this.historiqueClientActifs; // On valorise les clients actifs d'abord pour recuperer les Clients Absents.
           this.remplirTooltip();
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
         });
     },
     remplirTooltip() {
       /** Clients Dangereux*/
       let dangereux = [];
-      this.calculClientDangereux.forEach((element) => {
+      this.calculClientDangereux.forEach(element => {
         dangereux.push(element.nomClient + "<br />");
       });
       this.nomsClientsDangereux = dangereux.join("");
 
       /** Clients Absents*/
       let absents = [];
-      this.clientsAbsentsSemaineEnCours.forEach((element) => {
+      this.clientsAbsentsSemaineEnCours.forEach(element => {
         absents.push(element.nomClient + "<br />");
       });
       this.nomsClientsAbsents = absents.join("");
 
       /** Alertes */
       let alertes = [];
-      this.clientsAlerteComm.forEach((element) => {
+      this.clientsAlerteComm.forEach(element => {
         alertes.push(element.nomClient + "<br />");
       });
       this.nomsClientsAlerte = alertes.join("");
 
       /** Urgences */
       let urgences = [];
-      this.clientsUrgenceComm.forEach((element) => {
+      this.clientsUrgenceComm.forEach(element => {
         urgences.push(element.nomClient + "<br />");
       });
       this.nomsClientsUrgence = urgences.join("");
-    },
+    }
   },
   computed: {
     ...mapGetters([
@@ -165,11 +144,11 @@ export default {
       "clientsUrgenceComm",
       "clientsAbsentsSemaineEnCours",
       "pourcentageClientsAbsents",
-      "pourcentageClientsDangereux",
-    ]),
+      "pourcentageClientsDangereux"
+    ])
   },
   created() {
     this.recupererDonneesClients();
-  },
+  }
 };
 </script>

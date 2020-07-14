@@ -20,7 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { store } from './store/store'
 
 import lodash from 'lodash'
-Object.defineProperty(Vue.prototype, '$_', { value : lodash })
+Object.defineProperty(Vue.prototype, '$_', { value: lodash })
 
 export const refreshOperationsEventBus = new Vue();
 

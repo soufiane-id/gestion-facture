@@ -218,7 +218,7 @@ export default {
       }
       // Cas où il n y a pas d'historique pour les semaines passées
       else if (isSynchronized == null && !this.isDateWithinCurrentweek(date)) {
-        this.disableBtnSync = true;
+        this.disableBtnSync = false;
         this.variantBtnSync = "success";
       }
       // Cas historique Synchronise
