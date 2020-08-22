@@ -15,7 +15,6 @@
     <ExcelReader class="importId" @on-select-file="handleSelectedFile">Importer !</ExcelReader>
 
     <b-col sm="12">
-
       <b-table
         id="my-table2154"
         :items="responseInteg"
@@ -31,13 +30,12 @@
         </template>
       </b-table>
       <b-pagination
-      v-model="currentPage"
-      :total-rows="rows"
-      :per-page="perPage"
-      aria-controls="my-table"
-      align="center"
-    ></b-pagination>
-
+        v-model="currentPage"
+        :total-rows="rows"
+        :per-page="perPage"
+        aria-controls="my-table"
+        align="center"
+      ></b-pagination>
     </b-col>
   </div>
 </template>
@@ -45,7 +43,7 @@
 <script>
 import http from "../../client/http-common";
 import toast from "../../commons/toast/toast";
-import ExcelReader from "../../commons/excel/ExcelReader"
+import ExcelReader from "../../commons/excel/ExcelReader";
 
 export default {
   name: "UploadExcel",
@@ -60,32 +58,32 @@ export default {
           key: "dateFacture",
           label: "Date facture",
           sortable: true,
-          class: "text-center"
+          class: "text-center",
         },
         {
           key: "numeroDocument",
           label: "N° Document",
           sortable: true,
-          class: "text-center"
+          class: "text-center",
         },
         {
           key: "montantFacture",
           label: "Montant Facture",
           sortable: true,
-          class: "text-center"
+          class: "text-center",
         },
         {
           key: "nomPersonne",
           label: "Client/Frs",
           sortable: true,
-          class: "text-center"
+          class: "text-center",
         },
         {
           key: "statutIntegration",
           label: "Statut Integ",
           sortable: true,
-          class: "text-center"
-        }
+          class: "text-center",
+        },
       ],
       societeSelectList: [],
       selectedSociete: "",
@@ -95,21 +93,22 @@ export default {
   methods: {
     monSuperTraitement(jsonBody) {
       /* Si une des colonnes manque, On arrête !*/
-      if(!JSON.stringify(jsonBody).includes("Date facture")
-        || !JSON.stringify(jsonBody).includes("Numéro du document")
-        || !JSON.stringify(jsonBody).includes("Montant")
-        || !JSON.stringify(jsonBody).includes("Soldée")
-        || !JSON.stringify(jsonBody).includes("Code tiers")
-        || !JSON.stringify(jsonBody).includes("Client")
-        || !JSON.stringify(jsonBody).includes("Moyen de paiement")
-      ){
-        toast.error('Les colonnes ne sont pas bonnes !');
+      if (
+        !JSON.stringify(jsonBody).includes("Date facture") ||
+        !JSON.stringify(jsonBody).includes("Numéro du document") ||
+        !JSON.stringify(jsonBody).includes("Montant") ||
+        !JSON.stringify(jsonBody).includes("Soldée") ||
+        !JSON.stringify(jsonBody).includes("Code tiers") ||
+        !JSON.stringify(jsonBody).includes("Client") ||
+        !JSON.stringify(jsonBody).includes("Moyen de paiement")
+      ) {
+        toast.error("Les colonnes ne sont pas bonnes !");
         this.loader.hide();
         return;
       }
 
       /* On formate le nom des colonnes pour les adapter aux champs coté backend*/
-      console.log('avant', jsonBody)
+      console.log("avant", jsonBody);
       jsonBody = JSON.parse(
         JSON.stringify(jsonBody)
           .split('"Date facture":')
@@ -127,18 +126,18 @@ export default {
           .split('"Moyen de paiement":')
           .join('"moyenPaiement":')
       );
-        console.log('apres', jsonBody)
+      console.log("apres", jsonBody);
       /* On supprime le champ moyenPaiement et les colonnes vides*/
-      jsonBody.forEach(function(element) {
-        if(element.__EMPTY !== undefined){
+      jsonBody.forEach(function (element) {
+        if (element.__EMPTY !== undefined) {
           delete element.__EMPTY;
         }
         delete element.moyenPaiement;
       });
 
       /* On supprime tous les elements n'ayant pas de dateFacture  */
-      jsonBody = jsonBody.filter(echeance => {
-        if(!echeance.dateFacture || !echeance.montantFacture) {
+      jsonBody = jsonBody.filter((echeance) => {
+        if (!echeance.dateFacture || !echeance.montantFacture) {
           return false;
         }
         return true;
@@ -149,44 +148,36 @@ export default {
         '"societe":{"idSociete":' + this.selectedSociete + "},";
       let self = this;
       for (let i in jsonBody) {
-          /* On ajoute le champ societe pour toutes les lignes*/
-          jsonBody[i] = JSON.parse(
-            this.insertAt(JSON.stringify(jsonBody[i]), 1, societeString)
-          );
+        /* On ajoute le champ societe pour toutes les lignes*/
+        jsonBody[i] = JSON.parse(
+          this.insertAt(JSON.stringify(jsonBody[i]), 1, societeString)
+        );
 
-          /*  Formattage des dates  */
-          /*console.log('dateParts avant split', + jsonBody[i].dateEcheance)
-          const dateParts = jsonBody[i].dateEcheance.split("/");
-          const regex = /^[0-9]{2}/;
-          if (dateParts[2].match(regex)) {
-            dateParts[2] = "20" + dateParts[2];
-            // month is 0-based, that's why we need dataParts[1] - 1
-            jsonBody[i].dateEcheance =
-              dateParts[1] + "/" + (dateParts[0]) + "/" + dateParts[2];
-          }
-          */
-          /* suppression des virgules dans le montantFacture et resteAPayer */
-          if (jsonBody[i].montantFacture.includes(",")) {
-            jsonBody[i].montantFacture = jsonBody[
-              i
-            ].montantFacture.replace(",", "");
-          }
-          /*if (jsonBody[i].resteAPayer.includes(",")) {
-            jsonBody[i].resteAPayer = jsonBody[i].resteAPayer.replace(
-              ",",
-              ""
-            );
-          }*/
+        /*  Formattage des dates  */
+        const dateParts = jsonBody[i].dateFacture.split("/");
+        const regex = /^[0-9]{2}$/;
+        // Si l'année est sur 2 digit
+        if (dateParts[2].match(regex)) {
+          jsonBody[i].dateFacture =
+            dateParts[0] + "/" + dateParts[1] + "/" + "20" + dateParts[2];
+        }
+        /* remplacer les virgules par des points dans le montantFacture */
+        if (jsonBody[i].montantFacture.includes(",")) {
+          jsonBody[i].montantFacture = jsonBody[i].montantFacture.replace(
+            ",",
+            "."
+          );
+        }
       }
-      console.log('DATA TO SEND', jsonBody)
+      console.log("DATA TO SEND", jsonBody);
       /* insertion dans la BDD*/
       http
         .post("integrerEcheanciers", jsonBody)
-        .then(function(response) {
+        .then(function (response) {
           self.responseInteg = response.data;
         })
-        .catch(function(error) {})
-        .finally(function() {
+        .catch(function (error) {})
+        .finally(function () {
           self.loader.hide();
         });
     },
@@ -201,7 +192,7 @@ export default {
       return stringToInsert + string;
     },
     handleSelectedFile(convertedData) {
-        console.log('convertedData', convertedData)
+      console.log("convertedData", convertedData);
       if (!this.selectedSociete) {
         toast.error("Veuillez mentionner la société");
         return;
@@ -215,37 +206,37 @@ export default {
         // Optional parameters
         container: this.fullPage ? null : this.$refs.formContainer,
         canCancel: true,
-        onCancel: this.onCancel
+        onCancel: this.onCancel,
       });
     },
     getBadge(status) {
       return status === "OK" ? "success" : "danger";
-    }
+    },
   },
   computed: {
     rows() {
       return this.responseInteg.length;
-    }
+    },
   },
   created() {
     http
       .get("/listSociete")
-      .then(response => {
+      .then((response) => {
         this.societes = response.data;
 
         this.societes.forEach((societe, index, mechanicsArray) => {
           let selectListOption = {
             value: societe.idSociete,
-            text: societe.nomSociete
+            text: societe.nomSociete,
           };
 
           this.societeSelectList.push(selectListOption);
         });
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
-  }
+  },
 };
 </script>
 
