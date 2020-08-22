@@ -68,7 +68,6 @@
 </template>
 
 <script>
-//import nav from "@/_nav";
 import { navigationService } from "@/navigation";
 import {
   Header as AppHeader,
@@ -82,7 +81,7 @@ import {
   Aside as AppAside,
   AsideToggler,
   Footer as TheFooter,
-  Breadcrumb
+  Breadcrumb,
 } from "@coreui/vue";
 import DefaultAside from "./DefaultAside";
 import DefaultHeaderDropdownAccnt from "./DefaultHeaderDropdownAccnt";
@@ -104,11 +103,11 @@ export default {
     SidebarToggler,
     SidebarHeader,
     SidebarNav,
-    SidebarMinimizer
+    SidebarMinimizer,
   },
   data() {
     return {
-      navigationTree: []
+      navigationTree: [],
     };
   },
   computed: {
@@ -117,20 +116,24 @@ export default {
     },
     list() {
       return this.$route.matched.filter(
-        route => route.name || route.meta.label
+        (route) => route.name || route.meta.label
       );
-    }
+    },
   },
   created() {
     this.subscription = authenticationService.currentUser.subscribe(
-      userInfo => {
-        this.navigationTree = navigationService.buildNavTree();
+      async (userInfo) => {
+        await authenticationService.getRoleByName(userInfo.roles[0]);
+
+        navigationService.buildNavTree().then((result) => {
+          this.navigationTree = result;
+        });
       }
     );
   },
   beforeDestroy() {
     // unsubscribe to ensure no memory leaks
     this.subscription.unsubscribe();
-  }
+  },
 };
 </script>

@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import dashboard from "./modules/dashboard";
 import suiviClient from "./modules/suiviClient";
 import auth from "./modules/auth";
+import gestionUtilisateurs from "./modules/gestionUtilisateurs";
 
 Vue.use(Vuex);
 
@@ -35,5 +36,6 @@ export const store = new Vuex.Store({
     dashboard,
     suiviClient,
     auth,
+    gestionUtilisateurs
   },
 });

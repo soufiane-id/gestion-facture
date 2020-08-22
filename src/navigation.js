@@ -1,10 +1,12 @@
-import { authenticationService } from "./_services/authentication.service";
+import { store } from "./store/store";
+import { EcransEnum } from "./_helpers/ecranEnum";
+
 
 export const navigationService = {
     buildNavTree,
 };
 
-function buildNavTree() {
+async function buildNavTree() {
     return [
         {
             name: "Accueil",
@@ -14,6 +16,9 @@ function buildNavTree() {
                 variant: "danger",
                 text: "NEW",
             },
+            attributes: {
+                hidden: !hasRights(EcransEnum.ACCUEIL)
+            },
         },
         {
             name: "Dashboard",
@@ -22,6 +27,9 @@ function buildNavTree() {
             badge: {
                 variant: "primary",
                 text: "NEW",
+            },
+            attributes: {
+                hidden: !hasRights(EcransEnum.DASHBOARD)
             },
         },
         {
@@ -37,6 +45,9 @@ function buildNavTree() {
             name: "Suivi Client",
             url: "/tdb/suiviClient",
             icon: "icon-speedometer",
+            attributes: {
+                hidden: !hasRights(EcransEnum.SUIVI_CLIENT)
+            },
         },
         {
             title: true,
@@ -51,11 +62,17 @@ function buildNavTree() {
             name: "Intégrer Opération",
             url: "/integration/operations",
             icon: "icon-drop",
+            attributes: {
+                hidden: !hasRights(EcransEnum.INTEGRATION_OPERATIONS)
+            },
         },
         {
             name: "Intégrer Echéance",
             url: "/integration/echeances",
             icon: "icon-pencil",
+            attributes: {
+                hidden: !hasRights(EcransEnum.INTEGRATION_ECHEANCES)
+            },
         },
         {
             title: true,
@@ -75,11 +92,17 @@ function buildNavTree() {
                     name: "Encours Client",
                     url: "/encours/Client",
                     icon: "icon-puzzle",
+                    attributes: {
+                        hidden: !hasRights(EcransEnum.ENCOURS_CLIENT)
+                    },
                 },
                 {
                     name: "Encours Fournisseur",
                     url: "/encours/Fournisseur",
                     icon: "icon-puzzle",
+                    attributes: {
+                        hidden: !hasRights(EcransEnum.ENCOURS_FOURNISSEUR)
+                    },
                 },
             ],
         },
@@ -92,12 +115,17 @@ function buildNavTree() {
                     name: "Liste opérations",
                     url: "/banque/banques",
                     icon: "icon-usd",
+                    attributes: {
+                        hidden: !hasRights(EcransEnum.LISTE_OPERATIONS)
+                    },
                 },
                 {
                     name: "Etat de la banque",
                     url: "/banque/etatBanque",
                     icon: "icon-usd",
-                    attributes: { hidden: authenticationService ? !authenticationService.isAdmin() : false },
+                    attributes: {
+                        hidden: !hasRights(EcransEnum.ETAT_BANQUE)
+                    },
                 },
             ],
         },
@@ -110,16 +138,51 @@ function buildNavTree() {
                     name: "Liste Clients",
                     url: "/partenaires/clients",
                     icon: "icon-puzzle",
+                    attributes: {
+                        hidden: !hasRights(EcransEnum.LISTE_CLIENT)
+                    },
                 },
                 {
                     name: "Liste Fournisseurs",
                     url: "/partenaires/fournisseurs",
                     icon: "icon-puzzle",
+                    attributes: {
+                        hidden: !hasRights(EcransEnum.LISTE_FOURNISSEUR)
+                    },
                 },
             ],
         },
         {
+            title: true,
+            name: "Administration",
+            class: "",
+            wrapper: {
+                element: "",
+                attributes: {},
+            },
+        },
+        {
+            name: "Gestion Utilisateurs",
+            url: "/administration/utilisateurs",
+            icon: "icon-speedometer",
+            attributes: {
+                hidden: !hasRights(EcransEnum.GESTION_UTILISATEURS)
+            },
+        },
+        {
+            name: "Gestion Roles",
+            url: "/administration/roles",
+            icon: "icon-speedometer",
+            attributes: {
+                hidden: !hasRights(EcransEnum.GESTION_ROLES)
+            },
+        },
+        {
             divider: true,
         },
-    ]
+    ];
+}
+
+function hasRights(ecranName) {
+    return store.state.auth.ecransAutorises.includes(ecranName) ? true : false;
 }

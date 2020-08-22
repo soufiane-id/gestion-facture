@@ -497,15 +497,3 @@ export default {
   }
 };
 </script>
-<style scoped>
-.add-new {
-  float: right;
-	height: 25px;
-	font-weight: bold;
-	font-size: 12px;
-	text-shadow: none;
-	min-width: 100px;
-	border-radius: 50px;
-	line-height: 13px;
-  }
-</style>

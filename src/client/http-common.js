@@ -38,16 +38,18 @@ instance.interceptors.response.use(
     console.log('error', error.response)
     if (error.response.status == 403 && error.response.data.message == 'Acces Interdit') {
       router.push('/403')
-    } else {
+    } else if (error.response.status == 401) {
       /**
        * Si le token n'est plus valide => Redirection vers page d'authentification + vider le localstorage
        */
+      localStorage.removeItem('userInfo')
       router.push('/login')
-      localStorage.removeItem('token')
-    }
-    if (error.response) {
+    } else {
       toast.error(error.response.data.message);
     }
+    /*if (error.response) {
+      toast.error(error.response.data.message);
+    }*/
     return Promise.reject(error);
   }
 );

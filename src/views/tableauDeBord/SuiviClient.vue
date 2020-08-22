@@ -65,7 +65,7 @@
           <p class="text-center">Client(s) avec urgence commercial</p>
         </b-card-body>
       </b-card>
-    </b-card-group> -->
+    </b-card-group>-->
 
     <div>
       <date-picker
@@ -83,14 +83,10 @@
         :disabled="disableBtnSync"
         @click="synchronize"
         style="float:right"
-        ><i class="fa fa-refresh"></i> Synchroniser</b-button
       >
-      <button
-        type="button"
-        class="btn btn-light add-new"
-        @click="download"
-        style="float:right"
-      >
+        <i class="fa fa-refresh"></i> Synchroniser
+      </b-button>
+      <button type="button" class="btn btn-light add-new" @click="download" style="float:right">
         <i class="fa fa-download"></i> Télécharger
       </button>
     </div>
@@ -98,11 +94,7 @@
     <div>
       <TableSuivi :dateSuiviClient="date" />
       <div class="vld-parent">
-        <Loading
-          :active.sync="isLoading"
-          color="#2DD1EE"
-          loader="bars"
-        ></Loading>
+        <Loading :active.sync="isLoading" color="#2DD1EE" loader="bars"></Loading>
       </div>
     </div>
   </div>
@@ -128,7 +120,7 @@ export default {
     Loading,
     TableSuivi: () => ({
       // the component we want to lazy load
-      component: import("./TableSuivi"),
+      component: import("./TableSuivi")
       // the component to show if our ChildComponent is taking some time to load
       //loading: LoadingState,
       // the component to show if ChildComponent fails to load
@@ -137,7 +129,7 @@ export default {
       //delay: 1000,
       // the time to wait before we give up and show ErrorState
       //timeout: 5000,
-    }),
+    })
   },
   data() {
     return {
@@ -146,17 +138,17 @@ export default {
       disableBtnSync: "",
       momentFormat: {
         // Date to String
-        stringify: (date) => {
+        stringify: date => {
           return date ? moment(date).format("LL") : "";
-        },
+        }
       },
       lang: {
         formatLocale: {
-          firstDayOfWeek: 1,
-        },
+          firstDayOfWeek: 1
+        }
       },
       isBusy: false,
-      isLoading: false,
+      isLoading: false
     };
   },
   methods: {
@@ -166,10 +158,10 @@ export default {
       http
         .get("/getHistoriqueClient", {
           params: {
-            date: date,
-          },
+            date: date
+          }
         })
-        .then((response) => {
+        .then(response => {
           this.setHistoriqueClient(response.data); // JSON are parsed automatically.
           this.isBusy = false;
           this.synchronizeStyle(
@@ -179,7 +171,7 @@ export default {
             date
           );
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
         });
     },
@@ -199,11 +191,11 @@ export default {
       let self = this;
       http
         .post("/synchronize", this.date)
-        .then((response) => {
+        .then(response => {
           self.recupererDonneesClients(this.date);
           self.isLoading = false;
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
         });
     },
@@ -242,7 +234,7 @@ export default {
     },
     notAfterToday(date) {
       return date > new Date();
-    },
+    }
   },
   computed: {
     ...mapGetters([
@@ -254,7 +246,7 @@ export default {
       "clientsAbsentsSemaineEnCours",
       "pourcentageClientsAbsents",
       "pourcentageClientsDangereux",
-      "getDateSuiviClient",
+      "getDateSuiviClient"
     ]),
     date: {
       get() {
@@ -262,13 +254,13 @@ export default {
       },
       set(value) {
         this.$store.commit("setDateSuiviClient", value);
-        this.date; // On réappelle la méthode get() pour valoriser lu numéro de la semaine dans le champ datepicker
-      },
-    },
+        //this.date; // On réappelle la méthode get() pour valoriser lu numéro de la semaine dans le champ datepicker
+      }
+    }
   },
   created() {
     this.recupererDonneesClients();
   },
-  mixins: [utilsMixin],
+  mixins: [utilsMixin]
 };
 </script>

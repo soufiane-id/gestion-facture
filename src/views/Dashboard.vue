@@ -3,6 +3,14 @@
     <div class="card">
       <div class="card-header" style="background-color:white">
         <h3>Rapport Financier :</h3>
+        <date-picker
+          :lang="lang"
+          v-model="date"
+          type="week"
+          @change="onWeekChange"
+          placeholder="Choisir une semaine.."
+          :disabled-date="notAfterToday"
+        ></date-picker>
       </div>
       <div class="card-body">
         <b-card-group deck>
@@ -65,7 +73,7 @@
         </b-card-group>
       </div>
       <div class="card-footer text-center" style="background-color:white">
-        <a href="#/tdb/suiviClient" class="btn btn-primary">Voir détails</a>
+        <a href="/tdb/suiviClient" class="btn btn-primary">Voir détails</a>
       </div>
     </div>
   </div>
@@ -77,14 +85,25 @@ import { utilsMixin } from "../commons/utils/utilsMixin";
 import toast from "../commons/toast/toast";
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 
 export default {
+  components: {
+    DatePicker
+  },
   data() {
     return {
+      semaineRapport: "",
       nomsClientsDangereux: "",
       nomsClientsAbsents: "",
       nomsClientsAlerte: "",
-      nomsClientsUrgence: ""
+      nomsClientsUrgence: "",
+      lang: {
+        formatLocale: {
+          firstDayOfWeek: 1
+        }
+      }
     };
   },
   methods: {
@@ -133,6 +152,12 @@ export default {
         urgences.push(element.nomClient + "<br />");
       });
       this.nomsClientsUrgence = urgences.join("");
+    },
+    onWeekChange(date) {
+      this.recupererDonneesClients(date);
+    },
+    notAfterToday(date) {
+      return date > new Date();
     }
   },
   computed: {
@@ -144,8 +169,17 @@ export default {
       "clientsUrgenceComm",
       "clientsAbsentsSemaineEnCours",
       "pourcentageClientsAbsents",
-      "pourcentageClientsDangereux"
-    ])
+      "pourcentageClientsDangereux",
+      "getDateSuiviClient"
+    ]),
+    date: {
+      get() {
+        return this.semaineRapport;
+      },
+      set(value) {
+        this.semaineRapport = value;
+      }
+    }
   },
   created() {
     this.recupererDonneesClients();

@@ -18,6 +18,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { store } from './store/store'
+import "@/assets/css/global.css"
 
 import lodash from 'lodash'
 Object.defineProperty(Vue.prototype, '$_', { value: lodash })

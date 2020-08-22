@@ -86,7 +86,6 @@ export default {
     }
   },
   created() {
-    this.$forceUpdate();
     this.subscription = authenticationService.currentUser.subscribe(
       userInfo => {
         let obj = JSON.parse(localStorage.getItem("userInfo"));

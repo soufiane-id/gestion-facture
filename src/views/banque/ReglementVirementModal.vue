@@ -11,14 +11,11 @@
       @ok="handleOk"
     >
       <div>
-        <b-form-group
-          label-cols-sm="4"
-          label-cols-lg="3"
-          label="Montant de l'opération : "
-          >{{
-            operation.montantDebit
-              ? this.getValeurAbsolue(operation.montantDebit)
-              : operation.montantCredit
+        <b-form-group label-cols-sm="4" label-cols-lg="3" label="Montant de l'opération : ">
+          {{
+          operation.montantDebit
+          ? this.getValeurAbsolue(operation.montantDebit)
+          : operation.montantCredit
           }}
         </b-form-group>
 
@@ -30,49 +27,41 @@
         ></b-form-radio-group>
       </div>
       <div class="card-tools button-magic">
-        <button
-          @click="magicBouton"
-          type="button"
-          class="btn btn-warning add-new"
-        >
+        <button @click="magicBouton" type="button" class="btn btn-warning add-new">
           <i class="fa fa-cog fa-spin fa-1x fa-fw"></i> Magic Button
         </button>
       </div>
 
       <!-- Nom Client AutoComplete-->
       <div v-if="operation.montantCredit && operation.montantCredit >= 0">
-        <span><strong>Nom Client : </strong></span>
+        <span>
+          <strong>Nom Client :</strong>
+        </span>
         <Autocomplete
           :suggestions="listAutoComplete"
           filterby="nomPersonne"
           v-model="autoCompleteModel"
           @selected="personneSelected"
-        >
-        </Autocomplete>
+        ></Autocomplete>
       </div>
 
       <!-- Nom Fournisseur AutoComplete-->
       <div v-if="operation.montantDebit">
-        <span>Nom Fournisseur : </span>
+        <span>Nom Fournisseur :</span>
         <Autocomplete
           :suggestions="listAutoComplete"
           filterby="nomPersonne"
           v-model="autoCompleteModel"
           @selected="personneSelected"
-        >
-        </Autocomplete>
+        ></Autocomplete>
       </div>
 
       <div style="margin-top:15px;">
-        <b-form-checkbox
-          size="sm"
-          style="float:right;"
-          v-model="selectAll"
-          @change="selectAllRows"
-          >{{
-            selectAll ? "Tout Désélectionner" : "Selectionner Tout"
-          }}</b-form-checkbox
-        >
+        <b-form-checkbox size="sm" style="float:right;" v-model="selectAll" @change="selectAllRows">
+          {{
+          selectAll ? "Tout Désélectionner" : "Selectionner Tout"
+          }}
+        </b-form-checkbox>
         <!-- Table des clients/Frs-->
         <b-table
           ref="selectableTable"
@@ -88,13 +77,8 @@
         >
           <template v-slot:custom-foot>
             <tr v-if="montantFactureTotal >= 0">
-              <td
-                class="bg-light text-white"
-                :colspan="clientColumns.length - 2"
-              ></td>
-              <td class="bg-success text-white text-center">
-                {{ montantFactureTotal }}
-              </td>
+              <td class="bg-light text-white" :colspan="clientColumns.length - 2"></td>
+              <td class="bg-success text-white text-center">{{ montantFactureTotal }}</td>
             </tr>
           </template>
         </b-table>
@@ -193,9 +177,7 @@ export default {
     personneSelected(personne) {
       console.log(personne);
       console.log(
-        `Customer Selected:\nid: ${personne.idPersonne}\nname: ${
-          personne.nomPersonne
-        }`
+        `Customer Selected:\nid: ${personne.idPersonne}\nname: ${personne.nomPersonne}`
       );
       this.idPersonneSelected = personne.idPersonne;
       this.recupererEcheancierParClient(personne.idPersonne);
@@ -259,7 +241,7 @@ export default {
               this.montantFacturesSelectionnes,
             this.selectedRow
           )
-          .then(function(response) {
+          .then(function (response) {
             // On rafraichi l'ensemble de la page des opérations ( penser à une amélioration !!!!!)
             refreshOperationsEventBus.$emit("refreshOperationsATraiter");
             refreshOperationsEventBus.$emit(
@@ -267,7 +249,7 @@ export default {
             );
             toast.success("Réglement par virement effectué avec succès!");
           })
-          .catch(function(error) {});
+          .catch(function (error) {});
       } else if (this.operation.montantCredit != null) {
         http
           .post(
@@ -277,7 +259,7 @@ export default {
               this.montantFacturesSelectionnes,
             this.selectedRow
           )
-          .then(function(response) {
+          .then(function (response) {
             // On rafraichi l'ensemble de la page des opérations ( penser à une amélioration !!!!!)
             refreshOperationsEventBus.$emit("refreshOperationsATraiter");
             refreshOperationsEventBus.$emit(
@@ -285,7 +267,7 @@ export default {
             );
             toast.success("Réglement par virement effectué avec succès!");
           })
-          .catch(function(error) {});
+          .catch(function (error) {});
       }
     },
     recupererMontantsFacture(resultat) {
@@ -303,7 +285,7 @@ export default {
         this.arrMontantFacture,
         montantCible,
         this.idPersonneSelected,
-        function(response) {
+        function (response) {
           console.log("response", response);
           self.resultatPersonne = response;
           toast.success("Solution trouvée .. ");
@@ -369,17 +351,6 @@ export default {
 </script>
 
 <style scoped>
-.add-new {
-  float: right;
-  height: 25px;
-  font-weight: bold;
-  font-size: 12px;
-  text-shadow: none;
-  min-width: 100px;
-  border-radius: 50px;
-  line-height: 13px;
-}
-
 .button-magic {
   margin-bottom: 40px;
 }

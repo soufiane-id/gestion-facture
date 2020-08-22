@@ -7,6 +7,7 @@ const state = {
   userName: localStorage.getItem('userInfo') ?
     JSON.parse(localStorage.getItem("userInfo")).nom + " " + JSON.parse(localStorage.getItem("userInfo")).prenom : '',
   roleName: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem("userInfo")).roles.toString() : '',
+  ecransAutorises: []
 };
 
 const mutations = {

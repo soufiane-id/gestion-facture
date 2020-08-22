@@ -1,12 +1,6 @@
 <template>
   <div>
-    <b-modal
-      id="formulaireAjoutEC"
-      ref="modal"
-      @hidden="onReset"
-      no-close-on-esc
-      hide-footer
-    >
+    <b-modal id="formulaireAjoutEC" ref="modal" @hidden="onReset" no-close-on-esc hide-footer>
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
         <!-- Societe -->
         <b-form-group id="input-group-3" label="Societe:" label-for="input-3">
@@ -21,22 +15,17 @@
 
         <!-- Nom Client AutoComplete-->
         <div>
-          <span>Nom {{ typePersonne }}: </span>
+          <span>Nom {{ typePersonne }}:</span>
           <AutoComplete
             :suggestions="personnes"
             filterby="nomPersonne"
             v-model="echeancierClient.personne.nomPersonne"
             @selected="clientSelected"
-          >
-          </AutoComplete>
+          ></AutoComplete>
         </div>
 
         <!-- Numero document -->
-        <b-form-group
-          id="input-group-2"
-          label="Numéro du document:"
-          label-for="input-2"
-        >
+        <b-form-group id="input-group-2" label="Numéro du document:" label-for="input-2">
           <b-form-input
             id="input-2"
             v-model="echeancierClient.numeroDocument"
@@ -46,11 +35,7 @@
         </b-form-group>
 
         <!-- Date de facture -->
-        <b-form-group
-          id="input-group-22"
-          label="Date Facture:"
-          label-for="input-2"
-        >
+        <b-form-group id="input-group-22" label="Date Facture:" label-for="input-2">
           <b-form-input
             id="input-4"
             type="date"
@@ -64,14 +49,10 @@
         <!-- Date Echeance -->
         <!-- <b-form-group id="input-group-4" label="Date Echeance:" label-for="input-2">
         <b-form-input id="input-5" type = "date" v-model="echeancierClient.dateEcheance" size="sm" placeholder="Entrer la date d\'echeance.."></b-form-input>
-      </b-form-group> -->
+        </b-form-group>-->
 
         <!-- Montant Facture -->
-        <b-form-group
-          id="input-group-5"
-          label="Montant de la facture:"
-          label-for="input-2"
-        >
+        <b-form-group id="input-group-5" label="Montant de la facture:" label-for="input-2">
           <b-form-input
             id="input-6"
             v-model="echeancierClient.montantFacture"
@@ -81,23 +62,10 @@
           ></b-form-input>
         </b-form-group>
 
-        <!-- Montant Paye -->
-        <!-- <b-form-group id="input-group-6" label="Montant payé:" label-for="input-2">
-        <b-form-input id="input-7" v-model="echeancierClient.montantPaye" size="sm" placeholder="Entrer le montant payé .."></b-form-input>
-      </b-form-group> -->
-
-        <!-- Reste A Payer -->
-        <!-- <b-form-group id="input-group-9" label="Reste à payer:" label-for="input-9">
-        <b-form-input id="input-9" v-model="echeancierClient.resteAPayer" size="sm" placeholder="Entrer le reste à payer .."></b-form-input>
-      </b-form-group> -->
-
-        <!-- Date Reglement Facture -->
-        <!-- <b-form-group id="input-group-8" label="Date Reglement Facture:" label-for="input-2">
-        <b-form-input id="input-8" type = "date" v-model="echeancierClient.dateReglementFacture" size="sm" placeholder="Entrer la date de reglement.."></b-form-input>
-      </b-form-group> -->
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <div class="center-div">
+          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="reset" variant="danger">Reset</b-button>
+        </div>
       </b-form>
     </b-modal>
   </div>
@@ -166,12 +134,12 @@ export default {
       let self = this;
       http
         .post("echeancierClients", this.echeancierClient)
-        .then(function(response) {
+        .then(function (response) {
           self.$emit("refresh", response.data);
           toast.success("Echeance insérée avec succès !");
         })
-        .catch(function(error) {})
-        .finally(function() {
+        .catch(function (error) {})
+        .finally(function () {
           self.clearForm(self);
         });
     },
