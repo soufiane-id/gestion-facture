@@ -28,37 +28,12 @@
     </div>
 
     <b-form class="container" inline style="margin-bottom:20px;">
-      <b-form-input
-        type="text"
-        v-model="filterOperations"
-        placeholder="Filtre opération..."
-      ></b-form-input>
-      <label class="mr-sm-2" for="inlineInput1" style="margin-left:80px;"
-        >Facture du:
-      </label>
-      <b-input
-        id="input-2"
-        type="date"
-        v-model="startDate"
-        required
-        size="sm"
-        placeholder="Du .."
-      ></b-input>
-      <label class="mx-sm-2" for="inlineInput2">Au: </label>
-      <b-input
-        id="input-63"
-        type="date"
-        v-model="endDate"
-        required
-        size="sm"
-        placeholder="Au .."
-      ></b-input>
-      <b-button-group
-        size="sm"
-        class="mx-1"
-        style="height: 28px"
-        @click="clearDatesFilter"
-      >
+      <b-form-input type="text" v-model="filterOperations" placeholder="Filtre opération..."></b-form-input>
+      <label class="mr-sm-2" for="inlineInput1" style="margin-left:80px;">Facture du:</label>
+      <b-input id="input-2" type="date" v-model="startDate" required size="sm" placeholder="Du .."></b-input>
+      <label class="mx-sm-2" for="inlineInput2">Au:</label>
+      <b-input id="input-63" type="date" v-model="endDate" required size="sm" placeholder="Au .."></b-input>
+      <b-button-group size="sm" class="mx-1" style="height: 28px" @click="clearDatesFilter">
         <b-btn>Cancel</b-btn>
       </b-button-group>
     </b-form>
@@ -75,9 +50,11 @@
       small
     >
       <template v-slot:cell(statutOperation)="operationsBancaire">
-        <b-badge :variant="getBadge(operationsBancaire.item.statutOperation)">{{
+        <b-badge :variant="getBadge(operationsBancaire.item.statutOperation)">
+          {{
           operationsBancaire.item.statutOperation
-        }}</b-badge>
+          }}
+        </b-badge>
       </template>
 
       <template v-slot:cell(action)="operationBancaire">
@@ -129,25 +106,22 @@
             :style="{ color: 'green' }"
           />
 
-          <!-- <div v-b-modal="'reglementSansFacture'" @click="reglerSansFacture(operationBancaire.item)" style="width:25px; height:25px;">
-            <img src="../../assets/noBill.jpg"/>
-          </div>
-          
-          <div v-b-modal="'reglementTransfertArgent'" @click="reglerTransfertArgent(operationBancaire.item)" style="width:25px; height:25px;">
-            <img src="../../assets/transfertArgent.jpg"/>
-          </div>       -->
+          <font-awesome-icon
+            @click="supprimerOperation(operationBancaire.item.codeOperation)"
+            icon="times"
+            v-b-tooltip.hover
+            title="Supprimer l'opération"
+            size="lg"
+            :style="{ color: 'red' }"
+          />
         </b-col>
       </template>
 
       <template v-slot:custom-foot>
         <tr>
           <td class="bg-gray text-white" :colspan="3"></td>
-          <td class="bg-success text-white text-center">
-            {{ montantFactureDebitTotal }}
-          </td>
-          <td class="bg-success text-white text-center">
-            {{ montantFactureCreditTotal }}
-          </td>
+          <td class="bg-success text-white text-center">{{ montantFactureDebitTotal }}</td>
+          <td class="bg-success text-white text-center">{{ montantFactureCreditTotal }}</td>
           <td class="bg-gray text-white" :colspan="2"></td>
         </tr>
       </template>
@@ -172,6 +146,7 @@ import ReglementTransfertArgent from "./reglement/ReglementTransfertArgentModal"
 import DetailReglementModule from "./reglement/DetailReglementModal";
 import ReglementTabs from "./reglement/ReglementTabs";
 import { refreshOperationsEventBus } from "../../main";
+import toast from "../../commons/toast/toast";
 
 export default {
   components: {
@@ -197,35 +172,32 @@ export default {
         {
           key: "codeOperation",
           sortable: true,
-          class: "text-center",
+          class: "text-center width-10",
         },
         {
           key: "dateOperation",
           sortable: true,
-          class: "text-center",
+          class: "text-center width-10",
         },
         {
           key: "nomOperation",
-          sortable: true,
-          class: "text-center",
+          class: "text-center long-text width-40",
         },
         {
           key: "montantDebit",
-          sortable: true,
-          class: "text-center",
+          class: "text-center width-10",
         },
         {
           key: "montantCredit",
-          sortable: true,
-          class: "text-center",
+          class: "text-center width-10",
         },
         {
           key: "statutOperation",
-          sortable: true,
-          class: "text-center",
+          class: "text-center width-10",
         },
         {
           key: "action",
+          class: "text-center width-10",
         },
       ],
       selectedOptionAffichage: "1", // Par défaut, on affiche les echéances non réglées
@@ -241,6 +213,26 @@ export default {
     },
     reglerTransfertArgent(operation) {
       this.transfertArgentARegler = operation;
+    },
+    supprimerOperation(codeOperation) {
+      let self = this;
+      toast.confirm(
+        "Etes vous sûr de vouloir supprimer cette opération ?",
+        function () {
+          http
+            .delete("/deleteOperation/" + codeOperation)
+            .then((response) => {
+              self.operationsBancaire = self.filtredOperations.filter(function (
+                op
+              ) {
+                return op.codeOperation != codeOperation;
+              });
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        }
+      );
     },
     recupererOperationsBancaire() {
       if (this.selectedOptionAffichage == 1) {
@@ -302,7 +294,7 @@ export default {
     },
   },
   watch: {
-    selectedOptionAffichage: function(newValue, oldValue) {
+    selectedOptionAffichage: function (newValue, oldValue) {
       if (newValue == 1) {
         this.showTabs = false;
         this.afficherOperationsATraiter();
@@ -340,7 +332,7 @@ export default {
         this.$store.commit("updateEndDateFilter", value);
       },
     },
-    filtredOperations: function() {
+    filtredOperations: function () {
       this.currentPage = 1;
 
       let operationsFiltred = this.operationsBancaire.filter((operation) => {
@@ -366,7 +358,7 @@ export default {
         this.$store.state.endDate !== null
       ) {
         let vm = this;
-        operationsFiltred = operationsFiltred.filter(function(element) {
+        operationsFiltred = operationsFiltred.filter(function (element) {
           return (
             vm.convertDate(vm.$store.state.startDate) <=
               vm.stringToDate(element.dateOperation) &&
@@ -406,3 +398,24 @@ export default {
   },
 };
 </script>
+<style >
+/* Mask long text then show it when hover */
+.long-text {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  word-break: break-all;
+  white-space: nowrap;
+}
+.width-10 {
+  width: 10%;
+}
+.width-40 {
+  width: 40%;
+}
+tr > td:hover {
+  overflow: visible;
+  white-space: unset;
+}
+</style>
